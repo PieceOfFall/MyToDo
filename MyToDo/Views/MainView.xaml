@@ -16,12 +16,13 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         AllowsTransparency="True"
-        FontFamily="{DynamicResource MaterialDesignFont}"
+        FontFamily="微软雅黑"
         WindowStyle="None" WindowStartupLocation="CenterScreen">
+
     <materialDesign:DialogHost DialogTheme="Inherit"
                              Identifier="RootDialog">
 
-        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+        <materialDesign:DrawerHost x:Name="drawerHost" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <!-- 侧边菜单栏 -->
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="220">
@@ -64,7 +65,7 @@
                                   DockPanel.Dock="Top"
                                   Mode="PrimaryMid">
                     <DockPanel>
-                        <!-- 左半部分 -->
+                        <!-- 右半部分 -->
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
 
                             <Image Width="35" Height="35" Source="/Images/avatar.jpg">
@@ -90,7 +91,7 @@
                             </Button>
                         </StackPanel>
 
-                        <!-- 右半部分 -->
+                        <!-- 左半部分 -->
                         <StackPanel Orientation="Horizontal">
                             <ToggleButton x:Name="MenuToggleButton"
                             AutomationProperties.Name="HamburgerToggleButton"
@@ -103,7 +104,7 @@
                                 Command="{Binding GoBackCommand}"
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Previous Item" />
+                                ToolTip="返回" />
 
                             <Button Margin="16,0,0,0"
                                 materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
@@ -111,7 +112,7 @@
                                 Command="{Binding GoForwardCommand}"
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{StaticResource MaterialDesignToolButton}"
-                                ToolTip="Next Item" />
+                                ToolTip="前进" />
 
                             <TextBlock Margin="16,0,0,0"
                                 HorizontalAlignment="Center"
@@ -125,9 +126,12 @@
                     </DockPanel>
                 </materialDesign:ColorZone>
 
+                <!-- 主页路由占位 -->
                 <ContentControl prism:RegionManager.RegionName="{x:Static ext:PrismManager.MainViewRegionName}"/>
+                
             </DockPanel>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
+
 </Window>
 

@@ -41,6 +41,11 @@ namespace MyToDo.Views
                 if (e.LeftButton == MouseButtonState.Pressed)
                     this.DragMove();
             };
+            // 路由变化时收起侧边栏
+            menuBar.SelectionChanged += (s, e) =>
+            {
+                drawerHost.IsLeftDrawerOpen = false;
+            };
         }
 
 

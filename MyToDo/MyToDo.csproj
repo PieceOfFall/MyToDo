@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Images\avatar.jpg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
