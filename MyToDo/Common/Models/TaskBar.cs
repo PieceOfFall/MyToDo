@@ -16,38 +16,38 @@ namespace MyToDo.Common.Models
         private string target;
 
 		// 图标
-        public string Icon
+		public string Icon
 		{
-			get { return icon; }
-			set { icon = value; }
+			get => icon;
+			set => icon = value;
 		}
 
 		// 标题
 		public string Title
 		{
-			get { return title; }
-			set { title = value; }
+			get => title;
+			set => title = value;
 		}
 
 		// 内容
 		public string Content
 		{
-			get { return content; }
-			set { content = value; }
+			get => content;
+			set => content = value;
 		}
 
 		// 颜色
 		public string Color
 		{
-			get { return color; }
-			set { color = value; }
+			get => color;
+			set => color = value;
 		}
 
 		// 触发目标
 		public string Target
 		{
-			get { return target; }
-			set { target = value; }
+			get => target;
+			set => target = value;
 		}
 
 	}

@@ -14,8 +14,8 @@ namespace MyToDo.Common.Models
 
 		public string Icon
 		{
-			get { return icon; }
-			set { icon = value; }
+			get => icon;
+			set => icon = value;
 		}
 
 		// 菜单名称
@@ -23,8 +23,8 @@ namespace MyToDo.Common.Models
 
 		public string Title
 		{
-			get { return title; }
-			set { title = value; }
+			get => title;
+			set => title = value;
 		}
 
 		// 菜单命名空间
@@ -32,9 +32,8 @@ namespace MyToDo.Common.Models
 
 		public string NameSpace
 		{
-			get { return nameSpace; }
-			set { nameSpace = value; }
+			get => nameSpace;
+			set => nameSpace = value;
 		}
-
 	}
 }

@@ -14,24 +14,24 @@ namespace MyToDo.Common.Models
         private int status;
 
 		// 标题
-        public string Title
+		public string Title
 		{
-			get { return title; }
-			set { title = value; }
+			get => title;
+			set => title = value;
 		}
 
 		// 内容
-        public string Content
+		public string Content
 		{
-			get { return content; }
-			set { content = value; }
+			get => content;
+			set => content = value;
 		}
 
 		// 状态
 		public int Status
 		{
-			get { return status; }
-			set { status = value; }
+			get => status;
+			set => status = value;
 		}
 
 	}
