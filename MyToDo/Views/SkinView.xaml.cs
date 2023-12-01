@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace MyToDo.Views
 {
     /// <summary>
-    /// SettingsView.xaml 的交互逻辑
+    /// SkinView.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class SkinView : UserControl
     {
-        public SettingsView()
+        public SkinView()
         {
             InitializeComponent();
-        }
-
-        private void ColumnDefinition_GiveFeedback(object sender, GiveFeedbackEventArgs e)
-        {
-
         }
     }
 }

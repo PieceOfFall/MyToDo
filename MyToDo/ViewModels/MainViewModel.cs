@@ -11,19 +11,30 @@ namespace MyToDo.ViewModels
         public MainViewModel(IRegionManager  regionManager)
         {
             menuBars = [];
+            previousVisibility = "Hidden";
+            nextVisibility = "Hidden";
             CreateMenuBar();
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
             _regionManager = regionManager;
             GoBackCommand = new DelegateCommand(() =>
             {
                 if (journal != null && journal.CanGoBack)
+                {
                     journal.GoBack();
+                    PreviousVisibility = journal.CanGoBack ? "Visible" : "Hidden";
+                    NextVisibility = journal.CanGoForward ? "Visible" : "Hidden";
+                }
+                    
             });
 
             GoForwardCommand = new DelegateCommand(() =>
             {
                 if (journal != null && journal.CanGoForward)
+                {
                     journal.GoForward();
+                    PreviousVisibility = journal.CanGoBack ? "Visible" : "Hidden";
+                    NextVisibility = journal.CanGoForward ? "Visible" : "Hidden";
+                }
             });
         }
 
@@ -36,6 +47,23 @@ namespace MyToDo.ViewModels
         private IRegionNavigationJournal? journal;
 
         private ObservableCollection<MenuBar> menuBars;
+
+        private string previousVisibility;
+
+        private string nextVisibility;
+
+        public string NextVisibility
+        {
+            get => nextVisibility;
+            set { nextVisibility = value;RaisePropertyChanged(); }
+        }
+
+        public string PreviousVisibility
+        {
+            get => previousVisibility;
+            set { previousVisibility = value;RaisePropertyChanged();}
+        }
+
 
         public ObservableCollection<MenuBar> MenuBars
         {
@@ -61,6 +89,13 @@ namespace MyToDo.ViewModels
                 if(back.Context!=null)
                     journal = back.Context.NavigationService.Journal;
             });
+
+            if(journal != null)
+            {
+                PreviousVisibility  = journal.CanGoBack     ? "Visible" : "Hidden";
+                NextVisibility      = journal.CanGoForward  ? "Visible" : "Hidden";
+            }
+            
         }
 
     }

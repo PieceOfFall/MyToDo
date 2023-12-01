@@ -8,6 +8,10 @@ namespace MyToDo.Extensions
 {
     public static class PrismManager
     {
+        // 首页区域
         public static readonly string MainViewRegionName = "MainViewRegion";
+
+        // 设置页区域
+        public static readonly string SettingsViewRegionName = "SettingsViewRegion";
     }
 }

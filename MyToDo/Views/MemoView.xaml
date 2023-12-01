@@ -4,9 +4,90 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MyToDo.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Memo" FontSize="80" />
-    </Grid>
+    <md:DialogHost>
+        <!-- 备忘录新建区域 -->
+        <md:DrawerHost IsRightDrawerOpen="{Binding IsRightDrawerOpen}">
+            <md:DrawerHost.RightDrawerContent>
+                <DockPanel Width="300" LastChildFill="False">
+                    <TextBlock Padding="20,10" Text="添加备忘录" FontSize="20" FontWeight="Bold" DockPanel.Dock="Top" />
+
+                    <TextBox Margin="20" md:HintAssist.Hint="请输入备忘录概要" DockPanel.Dock="Top" />
+                    <TextBox Margin="20" md:HintAssist.Hint="请输入备忘录内容" DockPanel.Dock="Top" />
+
+                    <Button Content="添加"
+                        Margin="20"
+                        DockPanel.Dock="Top" />
+                </DockPanel>
+            </md:DrawerHost.RightDrawerContent>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!-- 顶部栏 -->
+                <StackPanel Margin="15,0,0,0" Orientation="Horizontal">
+
+                    <TextBox Width="250" md:HintAssist.Hint="查找备忘录..." Margin="40,0,0,0" 
+                             md:TextFieldAssist.HasClearButton="True" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Button Grid.Row="0" 
+                    HorizontalAlignment="Right" 
+                    Command="{Binding AddCommand}"
+                    Content="+ 添加备忘录" Margin="10,5"/>
+
+                <!-- 备忘录显示区 -->
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding MemoDtos}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=ExpandIn}">
+                                   <Grid Width="220" 
+                                    Margin="8"
+                                    MinHeight="180" 
+                                    MaxHeight="250">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
+                                        <Button Content="删除" />
+                                    </md:PopupBox>
+
+                                    <Border Background="LightGreen" CornerRadius="5" Grid.RowSpan="2" />
+
+                                    <TextBlock FontWeight="Bold" Padding="10,5" Text="{Binding Title}" />
+                                    <TextBlock Padding="10,5" Text="{Binding Content}" Grid.Row="1" />
+
+                                    <Canvas ClipToBounds="True" Grid.RowSpan="2">
+                                        <Border CornerRadius="100" Canvas.Top="10" Canvas.Right="-50" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
+                                        <Border CornerRadius="100" Canvas.Top="80" Canvas.Right="-30" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
+                                    </Canvas>
+                                </Grid> 
+                                </md:TransitioningContent>
+                                
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                
+                
+            </Grid>
+        </md:DrawerHost>
+
+
+    </md:DialogHost>
 </UserControl>

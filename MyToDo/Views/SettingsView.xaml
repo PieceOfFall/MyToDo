@@ -3,10 +3,57 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ext="clr-namespace:MyToDo.Extensions"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:MyToDo.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Settings" FontSize="80" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- 顶部栏 -->
+        <TextBlock Grid.Row="0" Text="设置" FontSize="26" Margin="20,10"/>
+
+        <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="0,0,0,0.3" />
+
+        <!-- 显示区域 -->
+        <Grid Grid.Row="1" Margin="50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 设置菜单 -->
+            <ListBox x:Name="menuBar" ItemContainerStyle="{StaticResource MyListBoxItemStyle}"
+                     Grid.Column="0" ItemsSource="{Binding MenuBars}">
+                <!-- 菜单选中行为 -->
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding NavigateCommand}" CommandParameter="{Binding ElementName=menuBar,Path=SelectedItem}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <!-- 菜单选项 -->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <md:PackIcon Kind="{Binding Icon}" Margin="15,0" />
+                            <TextBlock Text="{Binding Title}" Margin="10,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- 设置页面路由占位 -->
+            <ContentControl
+                Margin="10,0"
+                Grid.Column="1" prism:RegionManager.RegionName="{x:Static ext:PrismManager.SettingsViewRegionName}"/>
+
+        </Grid>
+
     </Grid>
 </UserControl>
