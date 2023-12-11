@@ -1,25 +1,30 @@
 ﻿using MyToDo.Common.Models;
-using System;
-using System.Collections.Generic;
+using MyToDo.Service;
+using Prism.Commands;
+using Prism.Ioc;
+using Prism.Mvvm;
+using Prism.Regions;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyToDo.ViewModels
 {
-    public class ToDoViewModel : BindableBase
+    public class ToDoViewModel : NavigationViewModel
     {
-        public ToDoViewModel()
+        public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
-            toDoDtos = [];
-            CreateToDoList();
-            AddCommand = new DelegateCommand(Add);
+            toDoDtos = new ObservableCollection<ToDoDto>();
+            ExecuteCommand = new DelegateCommand<string>(Execute);
+            SelectCommand = new DelegateCommand<ToDoDto>(Selected);
+            this.service = service;
         }
+
+        private IToDoService service;
 
         private ObservableCollection<ToDoDto> toDoDtos;
 
-        public DelegateCommand AddCommand { get; private set; }
+        public DelegateCommand<string> ExecuteCommand { get; private set; }
+
+        public DelegateCommand<ToDoDto> SelectCommand { get; private set; }
 
         private bool isRightDrawerOpen;
 
@@ -29,11 +34,58 @@ namespace MyToDo.ViewModels
             set { isRightDrawerOpen = value;RaisePropertyChanged(); }
         }
 
+        private ToDoDto currentTodo;
 
+        public ToDoDto CurrentTodo
+        {
+            get { return currentTodo; }
+            set { currentTodo = value; RaisePropertyChanged(); }
+        }
+
+        /* 编辑 选中、新增时对象 */
         public ObservableCollection<ToDoDto> ToDoDtos
         {
             get => toDoDtos;
             set { toDoDtos = value;RaisePropertyChanged(); }
+        }
+
+        private string search;
+
+        /* 搜索条件 */
+        public string Search
+        {
+            get { return search; }
+            set { search = value; RaisePropertyChanged(); }
+        }
+
+        private void Execute(string operation)
+        {
+            switch(operation)
+            {
+                case "新增":Add(); break;
+                case "查询":Query();break;
+            }
+        }
+
+        private async void Query()
+        {
+            UpdateLoading(true);
+            try
+            {
+                ToDoDtos.Clear();
+                var todoRet = await service.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15, Title = Search });
+
+                if (todoRet.data != null)
+                    foreach (var item in todoRet.data.list)
+                    {
+                        ToDoDtos.Add(item);
+                    }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally { UpdateLoading(false); }
         }
 
         private void Add()
@@ -41,16 +93,50 @@ namespace MyToDo.ViewModels
             IsRightDrawerOpen = true;
         }
 
-        void CreateToDoList()
+        private async void Selected(ToDoDto obj)
         {
-            for (int i = 0; i < 20; i++)
+            UpdateLoading(true);
+            try
             {
-                ToDoDtos.Add(new ToDoDto()
+                IsRightDrawerOpen = true;
+
+                var todoRet = await service.GetFirstOfDefaultAsync(obj.Id);
+                if (todoRet.status == 200 && todoRet.data != null)
                 {
-                    Title = "标题"+i,
-                    Content="测试数据"
-                });
-            }
+                    CurrentTodo = todoRet.data;
+                    IsRightDrawerOpen = true;
+                }
+            } catch (Exception ex)
+            {
+
+            } finally { UpdateLoading(false); }
+            
+        }
+        
+        async void GetTodoAsync()
+        {
+            UpdateLoading(true);
+            try
+            {
+                ToDoDtos.Clear();
+                var todoRet = await service.GetAllasync(new PageOptions() { pageNum = 1, pageSize = 15 });
+
+                if (todoRet.data != null)
+                    foreach (var item in todoRet.data.list)
+                    {
+                        ToDoDtos.Add(item);
+                    }
+            } catch(Exception ex)
+            {
+
+            } finally { UpdateLoading(false); }
+        }
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            base.OnNavigatedTo(navigationContext);
+
+            GetTodoAsync();
         }
     }
 }

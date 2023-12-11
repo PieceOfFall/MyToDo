@@ -20,6 +20,7 @@
         WindowStyle="None" WindowStartupLocation="CenterScreen">
 
     <materialDesign:DialogHost DialogTheme="Inherit"
+                               x:Name="DialogHost"
                              Identifier="RootDialog">
 
         <materialDesign:DrawerHost x:Name="drawerHost" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -95,8 +96,17 @@
                         <StackPanel Orientation="Horizontal">
                             <ToggleButton x:Name="MenuToggleButton"
                             AutomationProperties.Name="HamburgerToggleButton"
-                            IsChecked="False"
-                            Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                            IsChecked="False">
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignHamburgerToggleButton}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Cursor" Value="Hand" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
 
                             <Button Margin="24,0,0,0"
                                     Visibility="{Binding PreviousVisibility}"

@@ -1,5 +1,8 @@
 ﻿using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using Prism.Commands;
+using Prism.Ioc;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +12,7 @@ using System.Windows.Media;
 
 namespace MyToDo.ViewModels
 {
-    public class SkinViewModel : BindableBase
+    public class SkinViewModel : NavigationViewModel
     {
         public IEnumerable<ISwatch> Swatches { get; } = SwatchHelper.Swatches;
 
@@ -40,10 +43,10 @@ namespace MyToDo.ViewModels
         }
 
 
-        public SkinViewModel()
+        public SkinViewModel(IContainerProvider provider) : base(provider)
         {
             ChangeHueCommand = new DelegateCommand<object>(ChangeHue);
-            _isDarkTheme = paletteHelper.GetTheme().GetBaseTheme() == BaseTheme.Dark;
+            _isDarkTheme = paletteHelper.GetTheme().GetBaseTheme() == BaseTheme.Dark;  
         }
 
         private void ChangeHue(object obj)

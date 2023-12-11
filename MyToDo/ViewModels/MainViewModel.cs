@@ -1,5 +1,8 @@
 ﻿using MyToDo.Common.Models;
 using MyToDo.Extensions;
+using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Regions;
 using System.Collections.ObjectModel;
 
 
@@ -10,7 +13,7 @@ namespace MyToDo.ViewModels
 
         public MainViewModel(IRegionManager  regionManager)
         {
-            menuBars = [];
+            menuBars = new ObservableCollection<MenuBar>();
             previousVisibility = "Hidden";
             nextVisibility = "Hidden";
             CreateMenuBar();

@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MyToDo.Extensions;
+using Prism.Events;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace MyToDo.Views
 {
@@ -19,9 +11,18 @@ namespace MyToDo.Views
     /// </summary>
     public partial class MainView : Window
     {
-        public MainView()
+        public MainView(IEventAggregator aggregator)
         {
             InitializeComponent();
+
+            // 注册等待消息窗口
+            aggregator.Register(arg =>
+            {
+                arg.IsWindowOpen = DialogHost.IsOpen;
+
+                if (DialogHost.IsOpen)
+                    DialogHost.DialogContent = new ProgressView();
+            });
 
             /* 初始化窗口事件 */
             // 最小化
@@ -39,7 +40,7 @@ namespace MyToDo.Views
             ColorZone.MouseMove += (s, e) =>
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
-                    this.DragMove();
+                    DragMove();
             };
             // 路由变化时收起侧边栏
             menuBar.SelectionChanged += (s, e) =>

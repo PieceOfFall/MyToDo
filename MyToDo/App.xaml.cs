@@ -1,6 +1,10 @@
-﻿using MyToDo.ViewModels;
+﻿using DryIoc;
+using MyToDo.Service;
+using MyToDo.Service.impl;
+using MyToDo.ViewModels;
 using MyToDo.Views;
 using Prism.DryIoc;
+using Prism.Ioc;
 using System.Windows;
 
 namespace MyToDo
@@ -15,14 +19,21 @@ namespace MyToDo
             return Container.Resolve<MainView>();
         }
 
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        protected override void RegisterTypes(Prism.Ioc.IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<IndexView,IndexViewModel>();
-            containerRegistry.RegisterForNavigation<MemoView,MemoViewModel>();
-            containerRegistry.RegisterForNavigation<SettingsView,SettingsViewModel>();
-            containerRegistry.RegisterForNavigation<ToDoView,ToDoViewModel>();
+            containerRegistry.GetContainer()
+                .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
+            containerRegistry.GetContainer().RegisterInstance(@"http://127.0.0.1:8989/", serviceKey: "webUrl");
 
-            containerRegistry.RegisterForNavigation<SkinView,SkinViewModel>();
+            containerRegistry.Register<IToDoService, ToDoService>();
+            containerRegistry.Register<IMemoService, MemoService>();
+
+            containerRegistry.RegisterForNavigation<IndexView, IndexViewModel>();
+            containerRegistry.RegisterForNavigation<MemoView, MemoViewModel>();
+            containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
+            containerRegistry.RegisterForNavigation<ToDoView, ToDoViewModel>();
+
+            containerRegistry.RegisterForNavigation<SkinView, SkinViewModel>();
             containerRegistry.RegisterForNavigation<AboutView>();
         }
     }

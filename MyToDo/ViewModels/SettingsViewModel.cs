@@ -1,5 +1,8 @@
 ﻿using MyToDo.Common.Models;
 using MyToDo.Extensions;
+using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,7 +27,7 @@ namespace MyToDo.ViewModels
 
         public SettingsViewModel(IRegionManager regionManager)
         {
-            menuBars = [];
+            menuBars = new ObservableCollection<MenuBar>();
             CreateMenuBar();
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
             _regionManager = regionManager;

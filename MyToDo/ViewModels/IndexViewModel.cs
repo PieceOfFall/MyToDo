@@ -1,4 +1,5 @@
 ﻿using MyToDo.Common.Models;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,10 +17,10 @@ namespace MyToDo.ViewModels
 
         public IndexViewModel()
         {
-            taskBars = [];
+            taskBars = new ObservableCollection<TaskBar>();
             CreateTaskBars();
-            toDoDtos = [];
-            memoDtos = [];
+            toDoDtos = new ObservableCollection<ToDoDto>();
+            memoDtos = new ObservableCollection<MemoDto>();
             CreateMemoAndToDo();
         }
 
