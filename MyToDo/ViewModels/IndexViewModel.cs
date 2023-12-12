@@ -1,11 +1,8 @@
 ﻿using MyToDo.Common.Models;
+using Prism.Commands;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
+using Prism.Services.Dialogs;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyToDo.ViewModels
 {
@@ -15,14 +12,20 @@ namespace MyToDo.ViewModels
         private ObservableCollection<ToDoDto> toDoDtos;
         private ObservableCollection<MemoDto> memoDtos;
 
-        public IndexViewModel()
+        public IndexViewModel(IDialogService dialog)
         {
+            
             taskBars = new ObservableCollection<TaskBar>();
             CreateTaskBars();
             toDoDtos = new ObservableCollection<ToDoDto>();
             memoDtos = new ObservableCollection<MemoDto>();
-            CreateMemoAndToDo();
+            ExecuteCommand = new DelegateCommand<string>(Execute);
+            Dialog = dialog;
         }
+
+        public IDialogService Dialog { get; set; }
+
+        public DelegateCommand<string> ExecuteCommand { get; set; }
 
         public ObservableCollection<TaskBar> TaskBars
         {
@@ -42,6 +45,8 @@ namespace MyToDo.ViewModels
             set { memoDtos = value; RaisePropertyChanged(); }
         }
 
+  
+
         void CreateTaskBars()
         {
             TaskBars.Add(new TaskBar() { Icon = "ClockFast", Title = "汇总", Color = "#FF0CA0FF", Content = "9", Target = "" });
@@ -50,13 +55,23 @@ namespace MyToDo.ViewModels
             TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录", Color = "#FFFFA000", Content = "19", Target = "" });
         }
 
-        void CreateMemoAndToDo()
+        private void Execute(string targetCommand)
         {
-            for (int i = 0; i < 10; i++)
+            switch (targetCommand)
             {
-                ToDoDtos.Add(new ToDoDto() { Title = "待办"+i, Content = "正在处理中..." });
-                MemoDtos.Add(new MemoDto() { Title = "备忘"+i, Content = "我的密码" });
+                case "新增待办": AddToDo(); break;
+                case "新增备忘录": AddMemo(); break;
             }
+        }
+
+        void AddToDo()
+        {
+            Dialog.ShowDialog("AddToDoView");
+        }
+
+        void AddMemo()
+        {
+            Dialog.ShowDialog("AddMemoView");
         }
 
     }

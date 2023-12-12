@@ -16,9 +16,12 @@ namespace MyToDo.ViewModels
             toDoDtos = new ObservableCollection<ToDoDto>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
+            DeleteCommand = new DelegateCommand<ToDoDto>(Delete);
             CurrentTodo = new ToDoDto();
             this.service = service;
         }
+
+
 
         private IToDoService service;
 
@@ -27,6 +30,8 @@ namespace MyToDo.ViewModels
         public DelegateCommand<string> ExecuteCommand { get; private set; }
 
         public DelegateCommand<ToDoDto> SelectCommand { get; private set; }
+
+        public DelegateCommand<ToDoDto> DeleteCommand { get; private set; }
 
         private bool isRightDrawerOpen;
 
@@ -60,6 +65,16 @@ namespace MyToDo.ViewModels
             set { search = value; RaisePropertyChanged(); }
         }
 
+        private int selectedIndex;
+
+        /* 下拉列表选中状态值 */
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set { selectedIndex = value; RaisePropertyChanged(); }
+        }
+
+
         private void Execute(string operation)
         {
             switch(operation)
@@ -76,7 +91,8 @@ namespace MyToDo.ViewModels
             try
             {
                 ToDoDtos.Clear();
-                var todoRet = await service.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15, Title = Search });
+                int? Status = SelectedIndex == 0 ? null : SelectedIndex == 1 ? 0 : 1;
+                var todoRet = await service.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15, Title = Search,Status = Status });
 
                 if (todoRet.data != null)
                     foreach (var item in todoRet.data.list)
@@ -157,14 +173,25 @@ namespace MyToDo.ViewModels
             } finally { UpdateLoading(false); }
             
         }
-        
+
+        private async void Delete(ToDoDto dto)
+        {
+            var ret = await service.DeleteAsync(dto.Id);
+            if(ret.data != 0)
+            {
+                GetTodoAsync();
+            }
+        }
+
         async void GetTodoAsync()
         {
             UpdateLoading(true);
             try
             {
                 ToDoDtos.Clear();
-                var todoRet = await service.GetAllasync(new PageOptions() { pageNum = 1, pageSize = 15 });
+                SelectedIndex = 0;
+
+                var todoRet = await service.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15 });
 
                 if (todoRet.data != null)
                     foreach (var item in todoRet.data.list)

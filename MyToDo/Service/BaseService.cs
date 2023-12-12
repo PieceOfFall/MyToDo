@@ -35,8 +35,7 @@ namespace MyToDo.Service
             var request = new BaseRequest
             {
                 Method = RestSharp.Method.Delete,
-                Route = $"{serviceName}/delete",
-                Parameter = id
+                Route = $"{serviceName}/delete?id={id}"
             };
             return await client.ExecuteAsync<int>(request);
         }

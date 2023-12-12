@@ -1,4 +1,5 @@
-﻿using MyToDo.Common.Models;
+﻿using MyToDo.Common;
+using MyToDo.Common.Models;
 using MyToDo.Extensions;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -8,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace MyToDo.ViewModels
 {
-    public class MainViewModel : BindableBase
+    public class MainViewModel : BindableBase, IConfigureService
     {
 
         public MainViewModel(IRegionManager  regionManager)
@@ -16,7 +17,6 @@ namespace MyToDo.ViewModels
             menuBars = new ObservableCollection<MenuBar>();
             previousVisibility = "Hidden";
             nextVisibility = "Hidden";
-            CreateMenuBar();
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
             _regionManager = regionManager;
             GoBackCommand = new DelegateCommand(() =>
@@ -101,5 +101,10 @@ namespace MyToDo.ViewModels
             
         }
 
+        public void Configure()
+        {
+            CreateMenuBar();
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("IndexView");
+        }
     }
 }

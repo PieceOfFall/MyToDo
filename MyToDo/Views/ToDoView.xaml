@@ -52,7 +52,7 @@
                     </TextBox>
                     
                     <TextBlock Text="筛选：" VerticalAlignment="Center" Margin="10,0" />
-                    <ComboBox SelectedIndex="0">
+                    <ComboBox SelectedIndex="{Binding SelectedIndex}">
                         <ComboBoxItem>全部</ComboBoxItem>
                         <ComboBoxItem>待办</ComboBoxItem>
                         <ComboBoxItem>已完成</ComboBoxItem>
@@ -97,10 +97,26 @@
                                     </Grid.RowDefinitions>
 
                                     <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="2">
-                                        <Button Content="删除" />
+                                        <Button Content="删除"
+                                                CommandParameter="{Binding}"
+                                                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"/>
                                     </md:PopupBox>
 
-                                        <Border Background="LightGreen" CornerRadius="5" Grid.RowSpan="2" />
+                                        <Border CornerRadius="5" Grid.RowSpan="2">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="0">
+                                                            <Setter Property="Background" Value="#ff3f34" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding Status}" Value="1">
+                                                            <Setter Property="Background" Value="#3CB371" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
 
                                         <Border Panel.ZIndex="1" Background="Transparent" CornerRadius="5" Grid.RowSpan="2">
                                             <Border.Style>
