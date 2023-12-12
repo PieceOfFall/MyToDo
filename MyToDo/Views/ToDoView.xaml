@@ -28,6 +28,8 @@
                     <TextBox Text="{Binding CurrentTodo.Content}" Margin="20" md:HintAssist.Hint="请输入待办内容" DockPanel.Dock="Top" />
 
                     <Button Content="添加"
+                            Command="{Binding ExecuteCommand}"
+                            CommandParameter="保存"
                             Margin="20"
                             DockPanel.Dock="Top" />
                 </DockPanel>

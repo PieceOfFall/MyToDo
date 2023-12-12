@@ -1,4 +1,5 @@
 ﻿using MyToDo.Common.Models;
+using MyToDo.Common.Models.db;
 using MyToDo.Service;
 using Prism.Commands;
 using Prism.Ioc;
@@ -15,6 +16,7 @@ namespace MyToDo.ViewModels
             toDoDtos = new ObservableCollection<ToDoDto>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
+            CurrentTodo = new ToDoDto();
             this.service = service;
         }
 
@@ -64,6 +66,7 @@ namespace MyToDo.ViewModels
             {
                 case "新增":Add(); break;
                 case "查询":Query();break;
+                case "保存":Save();break;
             }
         }
 
@@ -88,9 +91,51 @@ namespace MyToDo.ViewModels
             finally { UpdateLoading(false); }
         }
 
+        private async void Save()
+        {
+            
+                if (string.IsNullOrWhiteSpace(CurrentTodo.Title) ||
+                string.IsNullOrWhiteSpace(CurrentTodo.Content))
+                    return;
+
+                UpdateLoading(true);
+            try
+            {
+                if (CurrentTodo.Id != 0)
+                {
+                    var ret = await service.UpdateAsync(CurrentTodo);
+                    if (ret.data != 0)
+                    {
+                        GetTodoAsync();
+                        IsRightDrawerOpen = false;
+                    }
+                }
+                else
+                {
+                    var ret = await service.AddAsync(CurrentTodo);
+                    if (ret.data != 0)
+                    {
+                        GetTodoAsync();
+                        IsRightDrawerOpen = false;
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+            finally
+            {
+                UpdateLoading(false);
+            }
+            
+        }
+
         private void Add()
         {
             IsRightDrawerOpen = true;
+            CurrentTodo = new ToDoDto();
         }
 
         private async void Selected(ToDoDto obj)

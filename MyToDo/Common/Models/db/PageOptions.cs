@@ -1,6 +1,4 @@
-﻿
-
-namespace MyToDo.Common.Models
+﻿namespace MyToDo.Common.Models.db
 {
     public class PageOptions
     {

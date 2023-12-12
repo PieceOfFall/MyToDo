@@ -1,9 +1,8 @@
-﻿
-namespace MyToDo.Common.Models
+﻿namespace MyToDo.Common.Models.db
 {
     public class PageList<T>
     {
-        public int total {  get; set; }
+        public int total { get; set; }
 
         public List<T> list { get; set; }
 
@@ -25,11 +24,11 @@ namespace MyToDo.Common.Models
 
         public bool isFirstPage { get; set; }
 
-        public bool isLastPage { get; set;}
+        public bool isLastPage { get; set; }
 
         public bool hasPreviousPage { get; set; }
 
-        public bool hasNextPage { get; set;}
+        public bool hasNextPage { get; set; }
 
         public int navigatePages { get; set; }
 
@@ -37,6 +36,6 @@ namespace MyToDo.Common.Models
 
         public int navigateFirstPage { get; set; }
 
-        public int navigateLastPage { get; set;}
+        public int navigateLastPage { get; set; }
     }
 }

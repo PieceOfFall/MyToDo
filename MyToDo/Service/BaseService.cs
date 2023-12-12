@@ -1,4 +1,5 @@
 ﻿using MyToDo.Common.Models;
+using MyToDo.Common.Models.db;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,7 @@ namespace MyToDo.Service
                 Route = $"{serviceName}/query",
                 Parameter = queryPageOptions
             };
+
             return await client.ExecuteAsync<PageList<TEntity>>(request);
         }
 
@@ -82,7 +84,8 @@ namespace MyToDo.Service
             {
                 Method = RestSharp.Method.Put,
                 Route = $"{serviceName}/update",
-                Parameter = entity
+                Parameter = entity,
+                ContentType = "application/x-www-form-urlencoded"
             };
             return await client.ExecuteAsync<int>(request);
         }

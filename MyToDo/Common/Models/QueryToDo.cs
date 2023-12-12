@@ -3,34 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyToDo.Common.Models.db;
 
 namespace MyToDo.Common.Models
 {
     public class QueryToDo : PageOptions
     {
-        private string title;
-        private string content;
-        private int status;
+        public string Title { get; set; }
+        public string Content { get; set; }
 
-        // 标题
-        public string Title
-        {
-            get => title;
-            set => title = value;
-        }
-
-        // 内容
-        public string Content
-        {
-            get => content;
-            set => content = value;
-        }
-
-        // 状态
-        public int Status
-        {
-            get => status;
-            set => status = value;
-        }
+        public int Status { get; set; }
     }
 }
