@@ -39,14 +39,18 @@ namespace MyToDo
             containerRegistry.Register<IMemoService, MemoService>();
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
-            containerRegistry.RegisterDialog<AddToDoView,AddToDoViewModel>();
-            containerRegistry.RegisterDialog<AddMemoView,AddMemoViewModel>();
+            // 自定义对话框
+            containerRegistry.RegisterForNavigation<MsgView,MsgViewModel>();
+            containerRegistry.RegisterForNavigation<AddToDoView,AddToDoViewModel>();
+            containerRegistry.RegisterForNavigation<AddMemoView,AddMemoViewModel>();
 
+            // 窗口
             containerRegistry.RegisterForNavigation<IndexView, IndexViewModel>();
             containerRegistry.RegisterForNavigation<MemoView, MemoViewModel>();
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
             containerRegistry.RegisterForNavigation<ToDoView, ToDoViewModel>();
 
+            // 子窗口
             containerRegistry.RegisterForNavigation<SkinView, SkinViewModel>();
             containerRegistry.RegisterForNavigation<AboutView>();
 

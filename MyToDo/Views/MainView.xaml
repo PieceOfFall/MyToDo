@@ -21,7 +21,7 @@
 
     <materialDesign:DialogHost DialogTheme="Inherit"
                                x:Name="DialogHost"
-                             Identifier="RootDialog">
+                             Identifier="Root">
 
         <materialDesign:DrawerHost x:Name="drawerHost" IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <!-- 侧边菜单栏 -->

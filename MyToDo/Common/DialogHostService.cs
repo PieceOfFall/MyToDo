@@ -47,5 +47,7 @@ namespace MyToDo.Common
 
             return (IDialogResult)await DialogHost.Show(dialogContent,viewModel.DialogHostName,eventHandler);
         }
+
+
     }
 }

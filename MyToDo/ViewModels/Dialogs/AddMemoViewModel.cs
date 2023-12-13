@@ -1,25 +1,29 @@
-﻿using Prism.Services.Dialogs;
+﻿using MyToDo.Common;
+using Prism.Commands;
+using Prism.Services.Dialogs;
 
 namespace MyToDo.ViewModels.Dialogs
 {
-    public class AddMemoViewModel : IDialogAware
+    public class AddMemoViewModel : IDialogHostAware
     {
-        public string Title { get; set; }
-
-        public event Action<IDialogResult> RequestClose;
-
         public AddMemoViewModel()
         {
-
+            SaveCommand = new DelegateCommand(Save);
+            CancelCommand = new DelegateCommand(Cancel);
         }
 
-        public bool CanCloseDialog()
+        public string DialogHostName { get; set; }
+        public DelegateCommand SaveCommand { get; set; }
+        public DelegateCommand CancelCommand { get; set; }
+
+        private void Save()
         {
-            return true;
+            throw new NotImplementedException();
         }
 
-        public void OnDialogClosed()
+        private void Cancel()
         {
+            throw new NotImplementedException();
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

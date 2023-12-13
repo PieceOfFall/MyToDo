@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace MyToDo.Common
 {
-    internal interface IDialogHostAware : IDialogAware
+    internal interface IDialogHostAware
     {
         // 所属dialogHost名称
         string DialogHostName { get;set; }
 
         // 打开过程中执行
-        void onDialogOpen(IDialogParameters parameters);
+        void OnDialogOpened(IDialogParameters parameters);
 
         // 确定
         DelegateCommand SaveCommand { get; set; }

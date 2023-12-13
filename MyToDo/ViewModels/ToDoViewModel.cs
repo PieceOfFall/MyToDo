@@ -1,9 +1,10 @@
-﻿using MyToDo.Common.Models;
+﻿using MyToDo.Common;
+using MyToDo.Common.Models;
 using MyToDo.Common.Models.db;
+using MyToDo.Extensions;
 using MyToDo.Service;
 using Prism.Commands;
 using Prism.Ioc;
-using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
 
@@ -11,6 +12,8 @@ namespace MyToDo.ViewModels
 {
     public class ToDoViewModel : NavigationViewModel
     {
+        private readonly IDialogHostService dialogHost;
+
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
             toDoDtos = new ObservableCollection<ToDoDto>();
@@ -18,10 +21,9 @@ namespace MyToDo.ViewModels
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
             DeleteCommand = new DelegateCommand<ToDoDto>(Delete);
             CurrentTodo = new ToDoDto();
+            dialogHost = provider.Resolve<IDialogHostService>();
             this.service = service;
         }
-
-
 
         private IToDoService service;
 
@@ -74,14 +76,13 @@ namespace MyToDo.ViewModels
             set { selectedIndex = value; RaisePropertyChanged(); }
         }
 
-
         private void Execute(string operation)
         {
             switch(operation)
             {
-                case "新增":Add(); break;
-                case "查询":Query();break;
-                case "保存":Save();break;
+                case "新增":  Add()   ;break;
+                case "查询":  Query() ;break;
+                case "保存":  Save()  ;break;
             }
         }
 
@@ -176,6 +177,11 @@ namespace MyToDo.ViewModels
 
         private async void Delete(ToDoDto dto)
         {
+            var dialogRet = await dialogHost.Question(title:"提示",content: $"确认删除待办: '{dto.Title}' 吗？");
+
+            if (dialogRet.Result != Prism.Services.Dialogs.ButtonResult.OK)
+                return;
+
             var ret = await service.DeleteAsync(dto.Id);
             if(ret.data != 0)
             {

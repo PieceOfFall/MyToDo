@@ -4,9 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:cv="clr-namespace:MyToDo.Common.Converters"
              xmlns:local="clr-namespace:MyToDo.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <cv:IntToBoolConverter x:Key="intToBool"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -92,17 +97,38 @@
                     </Button>
                 </DockPanel>
 
-                <ListBox ItemsSource="{Binding ToDoDtos}"
+                <ListBox x:Name="todoList"
+                         ItemsSource="{Binding ToDoDtos}"
                          HorizontalContentAlignment="Stretch"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding EditToDoCommand}"
+                                                   CommandParameter="{Binding ElementName=todoList,Path=SelectedItem}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel MaxHeight="80" LastChildFill="False">
+                                <ToggleButton DockPanel.Dock="Right" IsChecked="{Binding Status,Converter={StaticResource intToBool}}" CommandParameter="{Binding}"
+                                              Command="{Binding DataContext.ToDoCompleteComand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}">
+                                    <ToggleButton.Style>
+                                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignSwitchToggleButton}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToggleButton.Style>
+                                </ToggleButton>
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}" FontWeight="Bold" />
                                     <TextBlock Text="{Binding Content}" Margin="0,5"  Opacity="0.5" />
                                 </StackPanel>
-                                <ToggleButton DockPanel.Dock="Right" />
                             </DockPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
