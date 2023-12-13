@@ -10,19 +10,22 @@ namespace MyToDo.Service
 
         public string ContentType { get; set; }
 
-        private object parameter;
+        public object? Body { get; set; }
+
+        private object? parameter;
 
         public object Parameter
         {
             get { return parameter; }
             set 
             {
-                var queryString = string.Join("&", value
-                                        .GetType()
-                                        .GetProperties()
-                                        .Where(property => property.GetValue(value) != null)
-                                        .Select(property => $"{property.Name}={Uri.EscapeDataString(property.GetValue(value)?.ToString() ?? "")}")
-                                        .ToArray());
+                var queryString =  "?" + 
+                    string .Join("&", value
+                           .GetType()
+                           .GetProperties()
+                           .Where(property => property.GetValue(value) != null)
+                           .Select(property => $"{property.Name}={Uri.EscapeDataString(property.GetValue(value)?.ToString() ?? "")}")
+                           .ToArray());
 
                 parameter = queryString; 
             }

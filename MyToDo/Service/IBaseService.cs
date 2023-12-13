@@ -22,7 +22,5 @@ namespace MyToDo.Service
 
         Task<ApiResponse<TEntity>> GetLastestAsync(int id);
 
-        Task<ApiResponse<PageList<TEntity>>> GetAllasync(PageOptions options);
-
     }
 }
