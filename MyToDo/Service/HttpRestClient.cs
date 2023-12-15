@@ -1,5 +1,9 @@
 ﻿using ImTools;
+using MyToDo.Common;
 using MyToDo.Common.Models;
+using MyToDo.Extensions;
+using Prism.Events;
+using Prism.Ioc;
 using RestSharp;
 using System.Text.Json;
 
@@ -9,7 +13,9 @@ namespace MyToDo.Service
     {
 
         protected readonly RestClient client;
-        private string apiUrl;
+        private readonly string apiUrl;
+
+        private static IEventAggregator aggregator = ContainerLocator.Current.Resolve<IEventAggregator>();
 
         public HttpRestClient(string apiUrl)
         {
@@ -17,23 +23,42 @@ namespace MyToDo.Service
             client = new RestClient(apiUrl);
         }
 
-        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest baseRequest)
+        public async Task<ApiResponse<T>?> ExecuteAsync<T>(BaseRequest baseRequest)
         {
-            if (baseRequest.Parameter != null)
-                baseRequest.Route += baseRequest.Parameter;
-
-            var request = new RestRequest(apiUrl + baseRequest.Route, method: baseRequest.Method);
-
-            if(baseRequest.Body != null)
+            try
             {
-                var jsonBody = JsonSerializer.Serialize(baseRequest.Body);
-                request.AddJsonBody(jsonBody);
+                if (baseRequest.Parameter != null)
+                    baseRequest.Route += baseRequest.Parameter;
+
+                var request = new RestRequest(apiUrl + baseRequest.Route, method: baseRequest.Method);
+
+                if (!baseRequest.Route.Contains("user"))
+                {
+                    request.AddHeader("Authorization", AppSession.Token);
+                }
+
+                if (baseRequest.Body != null)
+                {
+                    var jsonBody = JsonSerializer.Serialize(baseRequest.Body);
+                    request.AddJsonBody(jsonBody);
+                }
+
+                var response = await client.ExecuteAsync(request);
+
+                ApiResponse<T>? apiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK && !baseRequest.Route.Contains("user") && apiResponse?.status!= null)
+                {
+                    aggregator.SendMessage($"{apiResponse.status} : {apiResponse.msg}");
+                }
+                
+                return apiResponse;
             }
-
-            var response = await client.ExecuteAsync(request);
-
-            ApiResponse<T>? apiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-            return apiResponse;
+            catch (Exception ex)
+            {
+                aggregator.SendMessage(ex.Message.ToString());
+                return null;
+            }
         }
     }
 }

@@ -14,7 +14,13 @@ namespace MyToDo.Views
     {
         public MainView(IEventAggregator aggregator, IDialogHostService dialogHostService)
         {
-            InitializeComponent();
+
+
+            // 注册提示消息
+            aggregator.RegisterMessage(arg =>
+            {
+                SnackBar?.MessageQueue?.Enqueue(arg);
+            });
 
             // 注册等待消息窗口
             aggregator.Register(arg =>
@@ -24,6 +30,8 @@ namespace MyToDo.Views
                 if (DialogHost.IsOpen)
                     DialogHost.DialogContent = new ProgressView();
             });
+
+            InitializeComponent();
 
             /* 初始化窗口事件 */
             // 最小化
@@ -54,6 +62,8 @@ namespace MyToDo.Views
             {
                 drawerHost.IsLeftDrawerOpen = false;
             };
+
+
         }
 
 

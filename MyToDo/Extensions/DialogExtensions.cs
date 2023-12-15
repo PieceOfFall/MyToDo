@@ -33,6 +33,27 @@ namespace MyToDo.Extensions
             aggregator.GetEvent<UpdateLoadingEvent>().Subscribe(action);
         }
 
+        /* 注册提示消息事件 */
+        public static void RegisterMessage(this IEventAggregator aggregator,Action<MessageModel> action,
+            string filterName = "Main")
+        {
+            aggregator.GetEvent<MessageEvent>().Subscribe(action,
+                ThreadOption.PublisherThread, true, (m) =>
+                {
+                    return m.Filter.Equals(filterName);
+                });
+        }
+
+        /* 发送提示消息 */
+        public static void SendMessage(this IEventAggregator aggregator, string message,
+            string filterName = "Main")
+        {
+            aggregator.GetEvent<MessageEvent>().Publish(new MessageModel()
+            {
+                Filter = filterName,
+                Message = message
+            });
+        }
 
     }
 }

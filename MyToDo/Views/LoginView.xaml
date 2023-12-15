@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="MyToDo.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:password="clr-namespace:MyToDo.Extensions"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:MyToDo.Views" xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+             mc:Ignorable="d" 
+             Width="600" Height="350">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="Width" Value="600"/>
+            <Setter Property="Height" Value="350"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+    
+    <Grid Background="#FFC600">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Image Source="/Images/logo.png" Margin="60" />
+
+        <md:Snackbar x:Name="LoginSnackBar" Panel.ZIndex="1" MessageQueue="{md:MessageQueue}" Grid.ColumnSpan="2" />
+
+        <DockPanel Grid.Column="1" LastChildFill="False" VerticalAlignment="Center" Margin="15">
+            <TextBlock Text="欢迎使用" FontSize="22" FontWeight="Bold"
+                       Margin="0,10" DockPanel.Dock="Top"/>
+
+            <TextBox BorderBrush="Black" Margin="0,10" 
+                     Text="{Binding Account}"
+                     md:HintAssist.Hint=" 请输入账号" DockPanel.Dock="Top" />
+            <PasswordBox BorderBrush="Black" Margin="0,10" 
+                         password:PasswordExtentions.Password="{Binding Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         md:HintAssist.Hint=" 请输入密码" DockPanel.Dock="Top">
+                <i:Interaction.Behaviors>
+                    <password:PasswordBehavior/>
+                </i:Interaction.Behaviors>
+                <PasswordBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding ExecuteCommand}" CommandParameter="Login" />
+                </PasswordBox.InputBindings>
+            </PasswordBox>
+
+            <Button Command="{Binding ExecuteCommand}"
+                    CommandParameter="Login"
+                    Content="登 录 系 统" 
+                    DockPanel.Dock="Top">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="FontSize" Value="17" />
+                        <Setter Property="Foreground" Value="Black" />
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <DockPanel LastChildFill="False" DockPanel.Dock="Top" Margin="0,10">
+                <TextBlock Text="忘记密码" DockPanel.Dock="Right"/>
+            </DockPanel>
+            
+        </DockPanel>
+    </Grid>
+</UserControl>

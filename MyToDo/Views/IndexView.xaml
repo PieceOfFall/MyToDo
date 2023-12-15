@@ -6,7 +6,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cv="clr-namespace:MyToDo.Common.Converters"
-             xmlns:local="clr-namespace:MyToDo.Views"
+             xmlns:local="clr-namespace:MyToDo.Views" xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:IndexViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -22,8 +22,19 @@
         <!-- 问候语 -->
         <TextBlock 
             Margin="15,10"
-            Text="你好,FAll! 今天是 xxxx-xx-xx 星期x" 
-            FontSize="22" />
+            FontWeight="Light"
+            FontSize="22">
+            <Run Text="你好 "/>
+            <Run Text="{Binding Username}" FontWeight="Bold"/>
+            <Run Text="!  今天是 "/>
+            <Run Text="{Binding Year}"/>
+            <Run Text="年"/>
+            <Run Text="{Binding Month}"/>
+            <Run Text="月"/>
+            <Run Text="{Binding Day}"/>
+            <Run Text="日"/>
+            <Run Text="{Binding DayOfWeek}"/>
+        </TextBlock>
 
         <!-- 任务汇总 -->
         <ItemsControl Grid.Row="1" ItemsSource="{Binding TaskBars}">

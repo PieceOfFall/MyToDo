@@ -1,9 +1,4 @@
 ﻿using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyToDo.Common.Models
 {
@@ -34,7 +29,7 @@ namespace MyToDo.Common.Models
 		public string Content
 		{
 			get => content;
-			set => content = value;
+			set { content = value; RaisePropertyChanged(); }
 		}
 
 		// 颜色
