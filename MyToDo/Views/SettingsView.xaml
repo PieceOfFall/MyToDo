@@ -8,6 +8,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:MyToDo.Views"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -17,7 +18,8 @@
         </Grid.RowDefinitions>
 
         <!-- 顶部栏 -->
-        <TextBlock Grid.Row="0" Text="设置" FontSize="26" Margin="20,10"/>
+
+
 
         <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="0,0,0,0.3" />
 

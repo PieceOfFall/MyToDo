@@ -14,13 +14,29 @@ namespace MyToDo.Views
     {
         public MainView(IEventAggregator aggregator, IDialogHostService dialogHostService)
         {
-
-
             // 注册提示消息
             aggregator.RegisterMessage(arg =>
             {
-                SnackBar?.MessageQueue?.Enqueue(arg);
+                try
+                {
+                    SnackBar?.MessageQueue?.Enqueue(arg);
+                } catch(Exception e) 
+                {
+
+                }
             });
+
+            // 注册Toast通知
+            aggregator.RegisterToast(arg =>
+            {
+                using(var toast = new NotifyIcon(arg.Title))
+                {
+                    toast.AppendContentText(arg.Message);
+                    toast.Show();
+                }
+                WindowsExtensions.Flash(this);
+            });
+
 
             // 注册等待消息窗口
             aggregator.Register(arg =>
@@ -44,13 +60,8 @@ namespace MyToDo.Views
                 : WindowState.Maximized;
             };
             // 关闭窗口
-            btnClose.Click += async(s, e) => 
-            {
-                var ret = await dialogHostService.Question("温馨提示", "确认要退出笔记本吗");
-                if ((ret.Result != Prism.Services.Dialogs.ButtonResult.OK))
-                    return;
-                Close(); 
-            };
+            btnClose.Click += (s, e) => Hide();
+
             // 拖动窗口
             ColorZone.MouseMove += (s, e) =>
             {
@@ -62,10 +73,8 @@ namespace MyToDo.Views
             {
                 drawerHost.IsLeftDrawerOpen = false;
             };
-
-
+           
         }
-
 
     }
 }

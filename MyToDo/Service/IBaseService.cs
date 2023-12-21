@@ -16,7 +16,7 @@ namespace MyToDo.Service
 
         Task<ApiResponse<int>> DeleteAsync(int id);
 
-        Task<ApiResponse<PageList<TEntity>>> QueryAsync(PageOptions options);
+        Task<ApiResponse<PageList<TEntity>>> QueryAsync(object options);
 
         Task<ApiResponse<TEntity>> GetFirstOfDefaultAsync(int id);
 

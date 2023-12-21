@@ -1,14 +1,19 @@
-﻿using MyToDo.Common;
+﻿using HandyControl.Controls;
+using HandyControl.Data;
+using MyToDo.Common;
 using MyToDo.Common.Models;
 using MyToDo.Common.Models.db;
 using MyToDo.Extensions;
 using MyToDo.Service;
+using MyToDo.Views.Dialogs;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace MyToDo.ViewModels
 {
@@ -93,6 +98,16 @@ namespace MyToDo.ViewModels
             taskBars = new ObservableCollection<TaskBar>();
             toDoDtos = new ObservableCollection<ToDoDto>();
             memoDtos = new ObservableCollection<MemoDto>();
+
+/*            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Tick += (s, e) =>
+            {
+                HandyControl.Controls.NotifyIcon.ShowBalloonTip("HandyControl", "Hello", NotifyIconInfoType.None, "123");
+
+            };
+            timer.Start();*/
+            
         }
 
         private IDialogHostService dialog { get; set; }
@@ -126,10 +141,10 @@ namespace MyToDo.ViewModels
         void CreateTaskBars(Summary summary)
         {
             TaskBars.Clear();
-            TaskBars.Add(new TaskBar() { Icon = "ClockFast", Title = "汇总", Color = "#FF0CA0FF", Content = $"{summary.sum}" });
-            TaskBars.Add(new TaskBar() { Icon = "ClockCheckOutline", Title = "已完成", Color = "#FF1ECA3A", Content = $"{summary.completedCount}" });
-            TaskBars.Add(new TaskBar() { Icon = "ChartLineVariant", Title = "完成比例", Color = "#FF02C6DC", Content = summary.completedRatio });
-            TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录", Color = "#FFFFA000", Content = $"{summary.memoCount}" });
+            TaskBars.Add(new TaskBar() { Icon = "ClockFast", Title = "汇总", Color = "#FF0CA0FF", Content = $"{summary.Sum}" });
+            TaskBars.Add(new TaskBar() { Icon = "ClockCheckOutline", Title = "已完成", Color = "#FF1ECA3A", Content = $"{summary.CompletedCount}" });
+            TaskBars.Add(new TaskBar() { Icon = "ChartLineVariant", Title = "完成比例", Color = "#FF02C6DC", Content = summary.CompletedRatio });
+            TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录", Color = "#FFFFA000", Content = $"{summary.MemoCount}" });
         }
 
         private async void  RefreshTaskBars()
@@ -138,10 +153,10 @@ namespace MyToDo.ViewModels
             if (ret.status == 200 && ret.data != null)
             {
                 var currentSummary = ret.data;
-                TaskBars[0].Content = currentSummary.sum.ToString();
-                TaskBars[1].Content = currentSummary.completedCount.ToString();
-                TaskBars[2].Content = currentSummary.completedRatio;
-                TaskBars[3].Content = currentSummary.memoCount.ToString();
+                TaskBars[0].Content = currentSummary.Sum.ToString();
+                TaskBars[1].Content = currentSummary.CompletedCount.ToString();
+                TaskBars[2].Content = currentSummary.CompletedRatio;
+                TaskBars[3].Content = currentSummary.MemoCount.ToString();
             }
         }
 
@@ -200,6 +215,7 @@ namespace MyToDo.ViewModels
             {
                 todoTimer.Change(500,Timeout.Infinite);
             }
+            dto.Status = 2;
             var ret = await toDoService.UpdateAsync(dto);
             if(ret.data >0)
             {
@@ -216,7 +232,7 @@ namespace MyToDo.ViewModels
         async void GetTodos()
         {
             ToDoDtos.Clear();
-            var todoRet = await toDoService.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15,Status = 0 });
+            var todoRet = await toDoService.QueryAsync(new { pageNum = 1, pageSize = 15,Status = 0,position = 2 });
             if (todoRet.data != null)
                 foreach (var item in todoRet.data.list)
                 {

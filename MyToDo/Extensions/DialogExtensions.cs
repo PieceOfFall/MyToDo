@@ -11,10 +11,12 @@ namespace MyToDo.Extensions
         public static async Task<IDialogResult> Question(this IDialogHostService dialogHost,
             string title, string content, string dialogHostName="Root")
         {
-            var param = new DialogParameters();
-            param.Add("Title", title);
-            param.Add("Content", content);
-            param.Add("dialogHostName", dialogHostName);
+            var param = new DialogParameters
+            {
+                { "Title", title },
+                { "Content", content },
+                { "dialogHostName", dialogHostName }
+            };
 
             var ret = await dialogHost.ShowDialog("MsgView",param,dialogHostName);
             return ret;

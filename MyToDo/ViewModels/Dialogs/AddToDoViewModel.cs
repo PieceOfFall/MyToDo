@@ -28,7 +28,6 @@ namespace MyToDo.ViewModels.Dialogs
             set { model = value; RaisePropertyChanged(); }
         }
 
-
         private void Save()
         {
             if (string.IsNullOrWhiteSpace(Model.Title) ||

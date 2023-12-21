@@ -1,5 +1,7 @@
 ﻿
 
+using Microsoft.VisualBasic;
+
 namespace MyToDo.Common.Models
 {
 	// 待办实体
@@ -8,6 +10,9 @@ namespace MyToDo.Common.Models
         private string title;
         private string content;
         private int status;
+        private int? receiverId;
+        private int? urgency;
+		private DateTime dueDate;
 
 		// 标题
 		public string Title
@@ -30,5 +35,25 @@ namespace MyToDo.Common.Models
 			set => status = value;
 		}
 
-	}
+        // 接收者id
+        public int? ReceiverId
+        {
+            get => receiverId ?? 0;
+            set => receiverId = value;
+        }
+
+        // 紧急程度
+        public int? Urgency
+        {
+            get => urgency ?? 3;
+            set => urgency = value;
+        }
+
+        // 过期时间
+        public DateTime DueDate
+        {
+            get => dueDate;
+            set => dueDate = value;
+        }
+    }
 }

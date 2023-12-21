@@ -18,13 +18,17 @@ namespace MyToDo
     /// </summary>
     public partial class App : PrismApplication
     {
+
         protected override Window CreateShell()
         {
             return Container.Resolve<MainView>();
         }
 
+
         public static void LoginOut(IContainerProvider provider)
         {
+            var mainViewModel = provider.Resolve<MainViewModel>();
+            
             Current.MainWindow.Hide();
 
             var dialogService = provider.Resolve<IDialogService>();
@@ -45,7 +49,7 @@ namespace MyToDo
         protected override void OnInitialized()
         {
             var dialogService = Container.Resolve<IDialogService>();
-
+            
             dialogService.ShowDialog("LoginView", cb =>
             {
                 if(cb.Result != ButtonResult.OK)
@@ -59,11 +63,12 @@ namespace MyToDo
             });
         }
 
-        protected override void RegisterTypes(Prism.Ioc.IContainerRegistry containerRegistry)
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.GetContainer()
                 .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
-            containerRegistry.GetContainer().RegisterInstance(@"http://127.0.0.1:8989/", serviceKey: "webUrl");
+            containerRegistry.GetContainer().RegisterInstance(@"http://192.168.3.219:8989/", serviceKey: "webUrl");
 
             // 服务
             containerRegistry.Register<ILoginService, LoginService>();

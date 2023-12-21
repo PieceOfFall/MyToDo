@@ -7,7 +7,7 @@ namespace MyToDo.Service.impl
     {
         private readonly HttpRestClient client;
 
-        public ToDoService(HttpRestClient client) : base(client, "todos")
+            public ToDoService(HttpRestClient client) : base(client, "todos")
         {
             this.client = client;
         }
@@ -21,6 +21,28 @@ namespace MyToDo.Service.impl
             };
 
             return await client.ExecuteAsync<Summary>(request);
+        }
+
+        public async Task<ApiResponse<SelectedToDo>> SelectToDo(int id)
+        {
+            var request = new BaseRequest()
+            {
+                Method = RestSharp.Method.Get,
+                Route = "todos/get",
+                Parameter = new { id }
+            };
+            return await client.ExecuteAsync<SelectedToDo>(request);
+        }
+
+        public async Task<ApiResponse<int?>> FindIdByUserName(string receiver)
+        {
+            var request = new BaseRequest()
+            {
+                Method = RestSharp.Method.Get,
+                Route = "todos/receiver/get",
+                Parameter = new { receiver }
+            };
+            return await client.ExecuteAsync<int?>(request);
         }
     }
 }

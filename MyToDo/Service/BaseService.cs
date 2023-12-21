@@ -52,7 +52,7 @@ namespace MyToDo.Service
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResponse<PageList<TEntity>>> QueryAsync(PageOptions queryPageOptions)
+        public async Task<ApiResponse<PageList<TEntity>>> QueryAsync(object queryPageOptions)
         {
             var request = new BaseRequest
             {

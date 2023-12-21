@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
+             
              xmlns:password="clr-namespace:MyToDo.Extensions"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:MyToDo.Views" xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
@@ -25,6 +26,7 @@
             <ColumnDefinition Width="1.2*" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        
 
         <Image Source="/Images/logo.png" Margin="60" />
 

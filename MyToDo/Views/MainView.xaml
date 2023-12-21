@@ -6,10 +6,12 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:prism="http://prismlibrary.com/"
         xmlns:local="clr-namespace:MyToDo"
+        xmlns:dialog="clr-namespace:MyToDo.Views.Dialogs"
         xmlns:ext="clr-namespace:MyToDo.Extensions"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
         xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" 
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
@@ -22,6 +24,10 @@
         FontFamily="微软雅黑"
         WindowStyle="None" WindowStartupLocation="CenterScreen">
 
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskbarItemInfo" />
+    </Window.TaskbarItemInfo>
+
     <materialDesign:DialogHost DialogTheme="Inherit"
                                x:Name="DialogHost"
                              Identifier="Root">
@@ -30,6 +36,10 @@
             <!-- 侧边菜单栏 -->
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="220">
+                    
+                    <!-- 角标 -->
+                    <dialog:NotifyIcon Visibility="Hidden" x:Name="NotifyIcon" />
+
                     <StackPanel Margin="0,20">
 
                         <Image Width="50" Height="50" Source="/Images/avatar.jpg">
@@ -171,7 +181,7 @@
                                 VerticalAlignment="Center"
                                 AutomationProperties.Name="Material Design In XAML Toolkit"
                                 FontSize="22"
-                                Text="笔 记 本" />
+                                Text="骑 鲸 协 同" />
                         </StackPanel>
 
 

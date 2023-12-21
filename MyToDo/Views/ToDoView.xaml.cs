@@ -20,9 +20,11 @@ namespace MyToDo.Views
     /// </summary>
     public partial class ToDoView : UserControl
     {
+
         public ToDoView()
         {
             InitializeComponent();
         }
+
     }
 }

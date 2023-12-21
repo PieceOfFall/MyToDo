@@ -1,14 +1,14 @@
-﻿using MyToDo.Common.Models;
+﻿using HandyControl.Controls;
+using HandyControl.Data;
+using MyToDo.Common.Models;
 using MyToDo.Common.Models.db;
 using MyToDo.Service;
+using MyToDo.ViewModels.Dialogs;
+using MyToDo.Views.Dialogs;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace MyToDo.ViewModels
 {
@@ -50,11 +50,14 @@ namespace MyToDo.ViewModels
 
         async void CreateToDoList()
         {
-            var memoRet = await service.QueryAsync(new PageOptions() { pageNum = 1, pageSize = 15 });
-            foreach (var item in memoRet.data.list)
-            {
-                MemoDtos.Add(item);
-            }
+
+
+            
+            /*            var memoRet = await service.QueryAsync(new PageOptions() { pageNum = 1, pageSize = 15 });
+                        foreach (var item in memoRet.data.list)
+                        {
+                            MemoDtos.Add(item);
+                        }*/
         }
     }
 }

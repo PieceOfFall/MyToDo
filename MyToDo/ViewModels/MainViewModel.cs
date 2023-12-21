@@ -6,7 +6,6 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
-using Windows.ApplicationModel.Store;
 
 
 namespace MyToDo.ViewModels
@@ -17,7 +16,7 @@ namespace MyToDo.ViewModels
         public MainViewModel(IContainerProvider containerProvider,
             IRegionManager  regionManager)
         {
-            MenuBars = new ObservableCollection<MenuBar>();
+            MenuBars = [];
             previousVisibility = "Hidden";
             nextVisibility = "Hidden";
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
@@ -31,7 +30,6 @@ namespace MyToDo.ViewModels
                     PreviousVisibility = journal.CanGoBack ? "Visible" : "Hidden";
                     NextVisibility = journal.CanGoForward ? "Visible" : "Hidden";
                 }
-                    
             });
 
             GoForwardCommand = new DelegateCommand(() =>
@@ -87,7 +85,6 @@ namespace MyToDo.ViewModels
             set { previousVisibility = value;RaisePropertyChanged();}
         }
 
-
         public ObservableCollection<MenuBar> MenuBars
         {
             get { return menuBars; }
@@ -127,10 +124,14 @@ namespace MyToDo.ViewModels
 
         public void Configure()
         {
-            if(MenuBars.Count == 0)
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("IndexView");
+            var journal = _regionManager.Regions[PrismManager.MainViewRegionName].NavigationService.Journal;
+            journal.Clear();
+            PreviousVisibility = NextVisibility = "Hidden";
+
+            if (MenuBars.Count == 0)
                 CreateMenuBar();
             Username = AppSession.Username;
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("IndexView");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace MyToDo.Views
             // 注册消息提示
             aggregator.RegisterMessage(arg =>
             {
-                LoginSnackBar.MessageQueue.Enqueue(arg.Message);
+                LoginSnackBar.MessageQueue!.Enqueue(arg.Message);
             },"Login");
         }
     }

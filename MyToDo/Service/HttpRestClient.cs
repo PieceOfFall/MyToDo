@@ -23,7 +23,7 @@ namespace MyToDo.Service
             client = new RestClient(apiUrl);
         }
 
-        public async Task<ApiResponse<T>?> ExecuteAsync<T>(BaseRequest baseRequest)
+        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest baseRequest)
         {
             try
             {
@@ -45,14 +45,27 @@ namespace MyToDo.Service
 
                 var response = await client.ExecuteAsync(request);
 
-                ApiResponse<T>? apiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-
-                if (response.StatusCode != System.Net.HttpStatusCode.OK && !baseRequest.Route.Contains("user") && apiResponse?.status!= null)
+                if(response.Content != null)
                 {
-                    aggregator.SendMessage($"{apiResponse.status} : {apiResponse.msg}");
+                    ApiResponse<T> apiResponse = JsonSerializer.Deserialize<ApiResponse<T>>(response.Content)!;
+
+                    if (response.StatusCode != System.Net.HttpStatusCode.OK && !baseRequest.Route.Contains("user") && apiResponse?.status != null)
+                    {
+                        aggregator.SendMessage($"{apiResponse.status} : {apiResponse.msg}");
+                    }
+                    aggregator.SendToast(new Common.Events.ToastModel()
+                    {
+                        Title="ToDo",
+                        Message=response.Content
+                    });
+                    return apiResponse;
                 }
-                
-                return apiResponse;
+                return new ApiResponse<T>()
+                {
+                    data = default,
+                    status = 400,
+                    msg = "Error Request"
+                };
             }
             catch (Exception ex)
             {

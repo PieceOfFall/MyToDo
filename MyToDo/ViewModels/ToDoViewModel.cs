@@ -1,12 +1,12 @@
 ﻿using MyToDo.Common;
 using MyToDo.Common.Models;
-using MyToDo.Common.Models.db;
 using MyToDo.Extensions;
 using MyToDo.Service;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace MyToDo.ViewModels
 {
@@ -16,18 +16,140 @@ namespace MyToDo.ViewModels
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
+            account = "";
+            receiverName = "";
+            search = "";
+            AddMethodSelectedIndex = -1;
+            this.service = service;
             toDoDtos = new ObservableCollection<ToDoDto>();
+            currentTodo = new ToDoDto();
+            currentUrgencyColor = "Black";
+            maxPageCount = 10;
+            pageIndex = 1;
+            isSender = false;
+            isReceiver = false;
+            dialogHost = provider.Resolve<IDialogHostService>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
             DeleteCommand = new DelegateCommand<ToDoDto>(Delete);
-            CurrentTodo = new ToDoDto();
-            dialogHost = provider.Resolve<IDialogHostService>();
-            this.service = service;
         }
 
-        private IToDoService service;
+        private readonly IToDoService service;
 
         private ObservableCollection<ToDoDto> toDoDtos;
+
+        private bool isEdit;
+
+        public bool IsEdit
+        {
+            get { return isEdit; }
+            set { isEdit = value; RaisePropertyChanged(); }
+        }
+
+        private string receiverName;
+
+        public string ReceiverName
+        {
+            get { return receiverName; }
+            set { receiverName = value; }
+        }
+
+        private string account;
+
+        public string Account
+        {
+            get { return account; }
+            set { account = value; RaisePropertyChanged(); }
+        }
+
+        private int addMethodSelectedIndex;
+
+        public int AddMethodSelectedIndex
+        {
+            get { return addMethodSelectedIndex; }
+            set { addMethodSelectedIndex = value; RaisePropertyChanged(); }
+        }
+
+        private int urgencySelectedIndex;
+
+        public int UrgencySelectedIndex
+        {
+            get { return urgencySelectedIndex; }
+            set 
+            {
+                CurrentUrgencyColor = MapUrgencyToColor(3 - value);
+
+                urgencySelectedIndex = value; RaisePropertyChanged(); 
+            }
+        }
+
+        private int maxPageCount;
+
+        public int MaxPageCount
+        {
+            get { return maxPageCount; }
+            set { maxPageCount = value; RaisePropertyChanged(); }
+        }
+
+        private int pageIndex;
+
+        public int PageIndex
+        {
+            get { return pageIndex; }
+            set { pageIndex = value; RaisePropertyChanged(); }
+        }
+
+        private bool isSender;
+
+        public bool IsSender
+        {
+            get { return isSender; }
+            set { isSender = value; RaisePropertyChanged();Query(); }
+        }
+
+        private bool isReceiver;
+
+        public bool IsReceiver
+        {
+            get { return isReceiver; }
+            set { isReceiver = value; RaisePropertyChanged(); Query(); }
+        }
+
+        private static string MapUrgencyToColor(int? urgency)
+        {
+            return urgency switch
+            {
+                3 => "Red",
+                2 => "#d4675f",
+                1 => "#d4b8b6",
+                0 => "Black",
+                _ => "Black",
+            };
+        }
+
+        private bool addById = false;
+
+        private string currentUrgencyColor;
+
+        public string CurrentUrgencyColor
+        {
+            get { return currentUrgencyColor; }
+            set { currentUrgencyColor = value; RaisePropertyChanged(); }
+        }
+
+        public bool AddById
+        {
+            get { return addById; }
+            set { addById = value; RaisePropertyChanged(); }
+        }
+
+        private bool addByName = false;
+
+        public bool AddByName
+        {
+            get { return addByName; }
+            set { addByName = value; RaisePropertyChanged(); }
+        }
 
         public DelegateCommand<string> ExecuteCommand { get; private set; }
 
@@ -73,7 +195,7 @@ namespace MyToDo.ViewModels
         public int SelectedIndex
         {
             get { return selectedIndex; }
-            set { selectedIndex = value; RaisePropertyChanged(); }
+            set { selectedIndex = value; RaisePropertyChanged();Query(); }
         }
 
         private void Execute(string operation)
@@ -83,6 +205,9 @@ namespace MyToDo.ViewModels
                 case "新增":  Add()   ;break;
                 case "查询":  Query() ;break;
                 case "保存":  Save()  ;break;
+                case "页码更新": Query(); break;
+                case "选择添加方式": ChooseAddMethod();break;
+                case "选择紧急程度": ChooseUrgency();break;
             }
         }
 
@@ -92,14 +217,34 @@ namespace MyToDo.ViewModels
             try
             {
                 ToDoDtos.Clear();
-                int? Status = SelectedIndex == 0 ? null : SelectedIndex == 1 ? 0 : 1;
-                var todoRet = await service.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15, Title = Search,Status = Status });
+                int? Status = SelectedIndex switch
+                {
+                    0 => null,
+                    1 => 0,
+                    2 => 1,
+                    3 => 2,
+                    _ => throw new NotImplementedException()
+                };
+                var position = 0;
+                if(isSender)
+                    position |= 1;
+                if(isReceiver)
+                    position |= 2;
+                position = position == 0 ? 3: position;
+
+                var todoRet = await service.QueryAsync(new { pageNum = PageIndex, pageSize = 20, Title = Search, Status, position });
 
                 if (todoRet.data != null)
+                {
+                    // 更新分页
+                    MaxPageCount = todoRet.data.pages;
+                    PageIndex = todoRet.data.pageNum;
+                    // 更新数据
                     foreach (var item in todoRet.data.list)
                     {
                         ToDoDtos.Add(item);
                     }
+                }
             }
             catch (Exception ex)
             {
@@ -110,7 +255,6 @@ namespace MyToDo.ViewModels
 
         private async void Save()
         {
-            
                 if (string.IsNullOrWhiteSpace(CurrentTodo.Title) ||
                 string.IsNullOrWhiteSpace(CurrentTodo.Content))
                     return;
@@ -123,7 +267,7 @@ namespace MyToDo.ViewModels
                     var ret = await service.UpdateAsync(CurrentTodo);
                     if (ret.data != 0)
                     {
-                        GetTodoAsync();
+                        Query();
                         IsRightDrawerOpen = false;
                     }
                 }
@@ -132,7 +276,7 @@ namespace MyToDo.ViewModels
                     var ret = await service.AddAsync(CurrentTodo);
                     if (ret.data != 0)
                     {
-                        GetTodoAsync();
+                        Query();
                         IsRightDrawerOpen = false;
                     }
                 }
@@ -149,22 +293,49 @@ namespace MyToDo.ViewModels
             
         }
 
+        private void ChooseAddMethod()
+        {
+            switch(AddMethodSelectedIndex)
+            {
+                case 0: AddById = true; AddByName = false; break;
+                case 1: AddByName = true; AddById = false; break;
+                case 2: AddById = false; AddByName = false; break;
+            }
+        }
+
+        private void ChooseUrgency()
+        {
+            CurrentTodo.Urgency = 3 - UrgencySelectedIndex;
+        }
+
         private void Add()
         {
+            Account = "";
+            IsEdit = false;
             IsRightDrawerOpen = true;
-            CurrentTodo = new ToDoDto();
+            CurrentTodo = new ToDoDto
+            {
+                Urgency = 3,
+                ReceiverId = 0,
+                DueDate = DateTime.Now,
+            };
+            UrgencySelectedIndex = 0;
+            CurrentUrgencyColor = MapUrgencyToColor(3);
         }
 
         private async void Selected(ToDoDto obj)
         {
+            AddMethodSelectedIndex = 1;
+            IsEdit = true;
             UpdateLoading(true);
             try
             {
-                IsRightDrawerOpen = true;
-
-                var todoRet = await service.GetFirstOfDefaultAsync(obj.Id);
+                var todoRet = await service.SelectToDo(obj.Id);
                 if (todoRet.status == 200 && todoRet.data != null)
                 {
+                    Account = todoRet.data.SelectedReceiver;
+                    if (todoRet.data.Urgency != null)
+                        UrgencySelectedIndex = 3 - (int)todoRet.data.Urgency;
                     CurrentTodo = todoRet.data;
                     IsRightDrawerOpen = true;
                 }
@@ -177,44 +348,23 @@ namespace MyToDo.ViewModels
 
         private async void Delete(ToDoDto dto)
         {
-            var dialogRet = await dialogHost.Question(title:"提示",content: $"确认删除待办: '{dto.Title}' 吗？");
+            var dialogRet = await dialogHost.Question(title: "提示", content: $"确认删除待办: '{dto.Title}' 吗？");
 
             if (dialogRet.Result != Prism.Services.Dialogs.ButtonResult.OK)
                 return;
 
             var ret = await service.DeleteAsync(dto.Id);
-            if(ret.data != 0)
+            if (ret.data != 0)
             {
-                GetTodoAsync();
+                Query();
             }
-        }
-
-        async void GetTodoAsync()
-        {
-            UpdateLoading(true);
-            try
-            {
-                ToDoDtos.Clear();
-                SelectedIndex = 0;
-
-                var todoRet = await service.QueryAsync(new QueryToDo() { pageNum = 1, pageSize = 15 });
-
-                if (todoRet.data != null)
-                    foreach (var item in todoRet.data.list)
-                    {
-                        ToDoDtos.Add(item);
-                    }
-            } catch(Exception ex)
-            {
-
-            } finally { UpdateLoading(false); }
         }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
 
-            GetTodoAsync();
+            Query();
         }
     }
 }

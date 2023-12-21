@@ -8,12 +8,12 @@ namespace MyToDo.Common.Models.db
 {
     public class Summary
     {
-        public int sum;
+        public int Sum { get; set; }
 
-        public int completedCount;
+        public int CompletedCount { get; set; }
 
-        public int memoCount;
+        public int MemoCount { get; set; }
 
-        public string completedRatio;
+        public string CompletedRatio { get; set; }
     }
 }

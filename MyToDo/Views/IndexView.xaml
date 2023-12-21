@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <cv:IntToBoolConverter x:Key="intToBool"/>
     </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -101,7 +102,7 @@
                         CommandParameter="新增待办"
                         Width="40"
                         Height="40"
-                        Style="{StaticResource MaterialDesignFloatingActionAccentButton}"  
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"  
                         VerticalAlignment="Top" 
                         DockPanel.Dock="Right">
                         <materialDesign:PackIcon Kind="Add"/>
@@ -153,7 +154,7 @@
                 Grid.Column="1">
                 <DockPanel DockPanel.Dock="Top" Margin="10, 5" LastChildFill="False">
                     <TextBlock Text="备忘录" FontSize="20" FontWeight="Bold" />
-                    <Button Style="{StaticResource MaterialDesignFloatingActionAccentButton}"  
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"  
                         Width="40"
                         Height="40"
                         Command="{Binding ExecuteCommand}"

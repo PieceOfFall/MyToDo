@@ -1,16 +1,16 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
+
 
 namespace MyToDo.Common.Converters
 {
-    public class IntToBoolConverter : IValueConverter
+    public class ReverseBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value != null && int.TryParse(value.ToString(), out int result))
+            if (value != null && bool.TryParse(value.ToString(), out bool result))
             {
-                if (result == 0)
+                if (result)
                     return false;
             }
             return true;
@@ -18,12 +18,12 @@ namespace MyToDo.Common.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value != null&& bool.TryParse(value.ToString(),out bool result))
+            if (value != null && bool.TryParse(value.ToString(), out bool result))
             {
                 if (result)
-                    return 1;
+                    return false;
             }
-            return 0;
+            return true;
         }
     }
 }
