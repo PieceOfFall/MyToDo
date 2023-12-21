@@ -3,6 +3,7 @@ using MyToDo.Common.Models;
 using MyToDo.Extensions;
 using MyToDo.Service;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using System.Collections.ObjectModel;
@@ -13,6 +14,8 @@ namespace MyToDo.ViewModels
     public class ToDoViewModel : NavigationViewModel
     {
         private readonly IDialogHostService dialogHost;
+
+        private readonly IEventAggregator aggregator;
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
@@ -29,6 +32,7 @@ namespace MyToDo.ViewModels
             isSender = false;
             isReceiver = false;
             dialogHost = provider.Resolve<IDialogHostService>();
+            aggregator = provider.Resolve<IEventAggregator>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
             DeleteCommand = new DelegateCommand<ToDoDto>(Delete);
@@ -373,7 +377,6 @@ namespace MyToDo.ViewModels
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
-
             Query();
         }
     }

@@ -53,11 +53,11 @@ namespace MyToDo.Service
                     {
                         aggregator.SendMessage($"{apiResponse.status} : {apiResponse.msg}");
                     }
-                    aggregator.SendToast(new Common.Events.ToastModel()
+                    /*aggregator.SendToast(new Common.Events.ToastModel()
                     {
                         Title="ToDo",
                         Message=response.Content
-                    });
+                    });*/
                     return apiResponse;
                 }
                 return new ApiResponse<T>()

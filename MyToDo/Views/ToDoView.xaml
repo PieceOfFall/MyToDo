@@ -48,7 +48,7 @@
                         <StackPanel Orientation="Horizontal" Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
                                     DockPanel.Dock="Top" Margin="0,5,0,20">
                             <TextBlock  VerticalAlignment="Center" Text="发布人 : "/>
-                            <TextBlock Padding="5,0,0,0" Text="{Binding Sender}" Foreground="#9A9A9A" />
+                            <TextBlock Padding="5,0,0,0" Text="{Binding Sender}" Foreground="{DynamicResource PrimaryHueLightBrush}" />
                         </StackPanel>
                         
 
@@ -235,6 +235,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto" />
                                         <RowDefinition />
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
 
                                     <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="2">
@@ -243,7 +244,7 @@
                                                 Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"/>
                                     </md:PopupBox>
 
-                                        <Border CornerRadius="5" Grid.RowSpan="2">
+                                        <Border CornerRadius="5" Grid.RowSpan="3">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
@@ -278,12 +279,23 @@
 
                                         <TextBlock FontWeight="Bold" Padding="10,5" Text="{Binding Title}" />
                                         <TextBlock TextTrimming="CharacterEllipsis" Padding="10,5" Text="{Binding Content}" Grid.Row="1" />
+                                        <DockPanel Grid.Row="2">
+                                            <TextBlock Margin="3,0,0,3"
+                                                       FontSize="12"
+                                                       FontWeight="Light"
+                                                       DockPanel.Dock="Left">
+                                                <Run Text="截止时间:"/>
+                                                <LineBreak/>
+                                                <Run Text="{Binding DueDateStr}" />
+                                            </TextBlock>
+                                        </DockPanel>
 
 
-                                            <Canvas ClipToBounds="True" Grid.RowSpan="2">
-                                        <Border CornerRadius="100" Canvas.Top="10" Canvas.Right="-50" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
-                                        <Border CornerRadius="100" Canvas.Top="80" Canvas.Right="-30" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
-                                    </Canvas>
+                                        <!-- 装饰背景⚪ -->
+                                        <Canvas ClipToBounds="True" Grid.RowSpan="2">
+                                            <Border CornerRadius="100" Canvas.Top="10" Canvas.Right="-50" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
+                                            <Border CornerRadius="100" Canvas.Top="80" Canvas.Right="-30" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
+                                        </Canvas>
                                 </Grid>
                                 </md:TransitioningContent>
                                 

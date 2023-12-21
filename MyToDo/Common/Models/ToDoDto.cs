@@ -13,9 +13,10 @@ namespace MyToDo.Common.Models
         private int? receiverId;
         private int? urgency;
 		private DateTime dueDate;
+        private string dueDateStr;
 
-		// 标题
-		public string Title
+        // 标题
+        public string Title
 		{
 			get => title;
 			set => title = value;
@@ -53,7 +54,17 @@ namespace MyToDo.Common.Models
         public DateTime DueDate
         {
             get => dueDate;
-            set => dueDate = value;
+            set
+            {
+                dueDate = value;
+                DueDateStr = Utils.DateUtil.DateToStr(value);
+            }
+        }
+
+        public string DueDateStr
+        {
+            get => dueDateStr;
+            set => dueDateStr = value;
         }
     }
 }
