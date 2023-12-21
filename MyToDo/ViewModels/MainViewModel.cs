@@ -16,9 +16,11 @@ namespace MyToDo.ViewModels
         public MainViewModel(IContainerProvider containerProvider,
             IRegionManager  regionManager)
         {
-            MenuBars = [];
+            menuBars = [];
+            selectedIndex = 0;
             previousVisibility = "Hidden";
             nextVisibility = "Hidden";
+            username = string.Empty;
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
             LogOutCommand = new DelegateCommand(LogOut);
 
@@ -62,15 +64,23 @@ namespace MyToDo.ViewModels
 
         private string username;
 
+        private int selectedIndex;
+
+        private string previousVisibility;
+
+        private string nextVisibility;
+
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set { selectedIndex = value; RaisePropertyChanged(); }
+        }
+
         public string Username
         {
             get { return username; }
             set { username = value; RaisePropertyChanged(); }
         }
-
-        private string previousVisibility;
-
-        private string nextVisibility;
 
 
         public string NextVisibility
@@ -119,6 +129,7 @@ namespace MyToDo.ViewModels
         }
         private void LogOut()
         {
+            SelectedIndex = 0;
             App.LoginOut(containerProvider);
         }
 

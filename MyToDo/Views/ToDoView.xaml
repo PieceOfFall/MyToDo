@@ -85,7 +85,7 @@
                         <TextBox Text="{Binding CurrentTodo.Title}" Margin="10" md:HintAssist.Hint="请输入待办概要" DockPanel.Dock="Top" />
                     </DockPanel>
 
-                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10" MaxHeight="250">
+                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10" MaxHeight="210">
                         <TextBlock  VerticalAlignment="Center" Text="内容 :"/>
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <TextBox AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding CurrentTodo.Content}" Margin="15"
@@ -278,7 +278,7 @@
 
 
                                         <TextBlock FontWeight="Bold" Padding="10,5" Text="{Binding Title}" />
-                                        <TextBlock TextTrimming="CharacterEllipsis" Padding="10,5" Text="{Binding Content}" Grid.Row="1" />
+                                        <TextBlock MaxHeight="100" TextTrimming="CharacterEllipsis" Padding="10,5" Text="{Binding Content}" Grid.Row="1" />
                                         <DockPanel Grid.Row="2">
                                             <TextBlock Margin="3,0,0,3"
                                                        FontSize="12"
