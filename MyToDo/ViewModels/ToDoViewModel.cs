@@ -62,6 +62,14 @@ namespace MyToDo.ViewModels
             set { account = value; RaisePropertyChanged(); }
         }
 
+        private string sender;
+
+        public string Sender
+        {
+            get { return sender; }
+            set { sender = value; RaisePropertyChanged(); }
+        }
+
         private int addMethodSelectedIndex;
 
         public int AddMethodSelectedIndex
@@ -311,6 +319,7 @@ namespace MyToDo.ViewModels
         private void Add()
         {
             Account = "";
+            Sender = "";
             IsEdit = false;
             IsRightDrawerOpen = true;
             CurrentTodo = new ToDoDto
@@ -334,6 +343,7 @@ namespace MyToDo.ViewModels
                 if (todoRet.status == 200 && todoRet.data != null)
                 {
                     Account = todoRet.data.SelectedReceiver;
+                    Sender = todoRet.data.SelectedSender;
                     if (todoRet.data.Urgency != null)
                         UrgencySelectedIndex = 3 - (int)todoRet.data.Urgency;
                     CurrentTodo = todoRet.data;

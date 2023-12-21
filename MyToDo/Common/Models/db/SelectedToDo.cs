@@ -12,5 +12,14 @@ namespace MyToDo.Common.Models.db
 			set { selectedReceiver = value; }
 		}
 
+		private string selectedSender;
+
+		public string SelectedSender
+		{
+			get { return selectedSender; }
+			set { selectedSender = value; }
+		}
+
+
 	}
 }
