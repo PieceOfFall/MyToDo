@@ -19,7 +19,6 @@ namespace MyToDo.ViewModels
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
-            account = "";
             receiverName = "";
             search = "";
             selectedIndex = 1;
@@ -32,6 +31,7 @@ namespace MyToDo.ViewModels
             pageIndex = 1;
             isSender = false;
             isReceiver = true;
+            isEnableDeleteButton = false;
             dialogHost = provider.Resolve<IDialogHostService>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
@@ -56,15 +56,7 @@ namespace MyToDo.ViewModels
         public string ReceiverName
         {
             get { return receiverName; }
-            set { receiverName = value; }
-        }
-
-        private string account;
-
-        public string Account
-        {
-            get { return account; }
-            set { account = value; RaisePropertyChanged(); }
+            set { receiverName = value; RaisePropertyChanged(); }
         }
 
         private string sender;
@@ -125,8 +117,24 @@ namespace MyToDo.ViewModels
         public bool IsReceiver
         {
             get { return isReceiver; }
-            set { isReceiver = value; }
+            set 
+            { 
+                isReceiver = value;
+                if (value)
+                    IsEnableDeleteButton = false;
+                else
+                    IsEnableDeleteButton = true;
+            }
         }
+
+        private bool isEnableDeleteButton;
+
+        public bool IsEnableDeleteButton
+        {
+            get { return isEnableDeleteButton; }
+            set { isEnableDeleteButton = value; RaisePropertyChanged(); }
+        }
+
 
         private static string MapUrgencyToColor(int? urgency)
         {
@@ -257,7 +265,7 @@ namespace MyToDo.ViewModels
                     position |= 2;
                 position = position == 0 ? 3: position;
 
-                var todoRet = await service.QueryAsync(new { pageNum = PageIndex, pageSize = 20, Title = Search, Status, position });
+                var todoRet = await service.QueryAsync(new { pageNum = PageIndex, pageSize = 15, Title = Search, Status, position });
 
                 if (todoRet.data != null)
                 {
@@ -346,8 +354,9 @@ namespace MyToDo.ViewModels
 
         private void Add()
         {
-            Account = "";
+            ReceiverName = "";
             Sender = "";
+            ReceiverName = "";
             IsEdit = false;
             IsRightDrawerOpen = true;
             CurrentTodo = new ToDoDto
@@ -370,7 +379,7 @@ namespace MyToDo.ViewModels
                 var todoRet = await service.SelectToDo(obj.Id);
                 if (todoRet.status == 200 && todoRet.data != null)
                 {
-                    Account = todoRet.data.SelectedReceiver;
+                    ReceiverName = todoRet.data.SelectedReceiver;
                     Sender = todoRet.data.SelectedSender;
                     if (todoRet.data.Urgency != null)
                         UrgencySelectedIndex = 3 - (int)todoRet.data.Urgency;
