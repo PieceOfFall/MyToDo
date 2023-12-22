@@ -11,6 +11,7 @@ namespace MyToDo.ViewModels.Dialogs
     {
         public AddToDoViewModel()
         {
+            urgencySelectedIndex = 0;
             username = AppSession.Username;
             SaveCommand = new DelegateCommand(Save);
             CancelCommand = new DelegateCommand(Cancel);
@@ -37,6 +38,19 @@ namespace MyToDo.ViewModels.Dialogs
             set { username = value; RaisePropertyChanged(); }
         }
 
+        private int urgencySelectedIndex;
+
+        public int UrgencySelectedIndex
+        {
+            get { return urgencySelectedIndex; }
+            set 
+            {
+                urgencySelectedIndex = value; 
+                RaisePropertyChanged();
+                Model.Urgency = (3 - urgencySelectedIndex);
+            }
+        }
+
         private void Save()
         {
             if (string.IsNullOrWhiteSpace(Model.Title) ||
@@ -61,10 +75,21 @@ namespace MyToDo.ViewModels.Dialogs
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+
             if (parameters.ContainsKey("Value"))
+            {
                 Model = parameters.GetValue<ToDoDto>("Value");
+                Model.ReceiverName = AppSession.Username;
+            }
             else
-                Model = new ToDoDto();
+            {
+                Model = new ToDoDto
+                {
+                    DueDate = DateTime.Now,
+                    Urgency = 3
+                };
+            }
+
         }
     }
 }

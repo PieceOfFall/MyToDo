@@ -287,6 +287,7 @@ namespace MyToDo.ViewModels
                 UpdateLoading(true);
             try
             {
+                // 更新
                 if (CurrentTodo.Id != 0)
                 {
                     var ret = await service.UpdateAsync(CurrentTodo);
@@ -298,8 +299,18 @@ namespace MyToDo.ViewModels
                 }
                 else
                 {
-                    var ret = await service.AddAsync(CurrentTodo);
-                    if (ret.data != 0)
+                    //添加
+                    ApiResponse<int>? ret = null;
+                    if (AddById)
+                    {
+                       ret = await service.AddAsync(CurrentTodo);
+                    } 
+                    else if(AddByName)
+                    {
+                        ret = await service.AddAsyncByName(CurrentTodo);
+                    }
+                     
+                    if (ret!=null && ret.data != 0)
                     {
                         Query();
                         IsRightDrawerOpen = false;

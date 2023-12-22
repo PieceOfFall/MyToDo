@@ -44,5 +44,16 @@ namespace MyToDo.Service.impl
             };
             return await client.ExecuteAsync<int?>(request);
         }
+
+        public async Task<ApiResponse<int>> AddAsyncByName(ToDoDto todo)
+        {
+            var request = new BaseRequest
+            {
+                Method = RestSharp.Method.Post,
+                Route = "todos/add/name",
+                Body = todo
+            };
+            return await client.ExecuteAsync<int>(request);
+        }
     }
 }

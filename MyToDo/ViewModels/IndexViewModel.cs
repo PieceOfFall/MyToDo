@@ -144,7 +144,7 @@ namespace MyToDo.ViewModels
             TaskBars.Add(new TaskBar() { Icon = "ClockFast", Title = "汇总", Color = "#FF0CA0FF", Content = $"{summary.Sum}" });
             TaskBars.Add(new TaskBar() { Icon = "ClockCheckOutline", Title = "已完成", Color = "#FF1ECA3A", Content = $"{summary.CompletedCount}" });
             TaskBars.Add(new TaskBar() { Icon = "ChartLineVariant", Title = "完成比例", Color = "#FF02C6DC", Content = summary.CompletedRatio });
-            TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录", Color = "#FFFFA000", Content = $"{summary.MemoCount}" });
+            TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录 (敬请期待...)", Color = "#FFFFA000", Content = $"" });
         }
 
         private async void  RefreshTaskBars()
@@ -186,7 +186,7 @@ namespace MyToDo.ViewModels
 
                 if(todo.Id == 0)
                 {
-                    var addRet = await toDoService.AddAsync(todo);
+                    var addRet = await toDoService.AddAsyncByName(todo);
                     if(addRet.data > 0 )
                         GetTodos();
                 }

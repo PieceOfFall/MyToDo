@@ -58,7 +58,7 @@
                         </TextBox>
                         <TextBox IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
                                   Visibility="{Binding AddByName,Converter={StaticResource boolToVisibility}}"
-                                  Text="{Binding Account,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人姓名">
+                                  Text="{Binding CurrentTodo.ReceiverName,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人姓名">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="TextChanged">
                                     <i:InvokeCommandAction Command="{Binding ExecuteCommand}" CommandParameter="查找办理人" />                                                                                                                                                                                                                                      

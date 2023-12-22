@@ -3,20 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:dialogs="clr-namespace:MyToDo.ViewModels.Dialogs" d:DataContext="{d:DesignInstance Type=dialogs:AddToDoViewModel}"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" 
+
              mc:Ignorable="d" 
-             Width="450" Height="380">
+             Width="250" Height="280">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="添加待办" Padding="20,10"
                    FontWeight="Bold" FontSize="20" />
 
-        <DockPanel Grid.Row="1" LastChildFill="False">
+        <DockPanel Grid.Row="1" >
             <StackPanel DockPanel.Dock="Top" Margin="20,0" Orientation="Horizontal">
                 <TextBlock Text="状态  " VerticalAlignment="Center" />
                 <ComboBox SelectedIndex="{Binding Model.Status}">
@@ -25,12 +27,18 @@
                 </ComboBox>
             </StackPanel>
 
-            <TextBlock DockPanel.Dock="Top" Margin="20,20,0,10">
+            <TextBlock DockPanel.Dock="Top" Margin="20,20,0,0">
                 <Run Text="发起人  "/>
-                <Run Text="{Binding Username}" Foreground="Gray"/>
+                <Run Text="{Binding Username}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
             </TextBlock>
 
             <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
+                <TextBlock Text="办事人     " VerticalAlignment="Center" Margin="0,0,0,0" />
+                <TextBox Text="{Binding Model.ReceiverName}" 
+             md:HintAssist.Hint="请输入办事人名称                                                                  "/>
+            </StackPanel>
+
+            <StackPanel Margin="20,10" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock Text="标题     " VerticalAlignment="Center" Margin="0,0,10,0" />
                 <TextBox Text="{Binding Model.Title}" 
                          md:HintAssist.Hint="请输入待办标题                                                                  "/>
@@ -41,6 +49,26 @@
                 <TextBox Text="{Binding Model.Content}" 
              md:HintAssist.Hint="请输入待办内容                                                                  "/>
             </StackPanel>
+
+            <StackPanel Margin="20,10,20,0" Orientation="Horizontal" DockPanel.Dock="Top" >
+                <TextBlock  VerticalAlignment="Center" Text="到期     "/>
+                <DatePicker SelectedDate="{Binding Model.DueDate}"
+                            Width="200"
+                            md:HintAssist.Hint="选择到期时间"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
+            </StackPanel>
+
+            <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
+                <TextBlock  VerticalAlignment="Center" Text="紧急程度  "/>
+                <ComboBox SelectedIndex="{Binding UrgencySelectedIndex}" Margin="10,0,0,0"
+                          md:HintAssist.Hint="请选择紧急度">
+                    <ComboBoxItem Background="Red" Content="紧 急 重 要" />
+                    <ComboBoxItem Background="#d4675f" Content="不 紧 急 重 要" />
+                    <ComboBoxItem Background="#d4b8b6" Content="紧 急 不 重 要" />
+                    <ComboBoxItem Content="不紧急不重要" />
+                </ComboBox>
+            </StackPanel>
+            
         </DockPanel>
 
         <StackPanel Margin="10" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -51,5 +79,6 @@
                     Command="{Binding CancelCommand}"
                     Style="{StaticResource MaterialDesignOutlinedButton}" />
         </StackPanel>
+
     </Grid>
 </UserControl>

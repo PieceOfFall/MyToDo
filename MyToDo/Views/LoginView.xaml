@@ -8,7 +8,8 @@
              
              xmlns:password="clr-namespace:MyToDo.Extensions"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:MyToDo.Views" xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+             xmlns:local="clr-namespace:MyToDo.Views" xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
              mc:Ignorable="d" 
              Width="600" Height="350">
     <prism:Dialog.WindowStyle>

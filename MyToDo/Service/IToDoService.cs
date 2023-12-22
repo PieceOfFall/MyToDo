@@ -12,5 +12,7 @@ namespace MyToDo.Service
         Task<ApiResponse<SelectedToDo>> SelectToDo(int id);
 
         Task<ApiResponse<int?>> FindIdByUserName(string receiverName);
+
+        Task<ApiResponse<int>> AddAsyncByName(ToDoDto todo);
     }
 }
