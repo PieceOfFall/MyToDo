@@ -15,26 +15,27 @@ namespace MyToDo.ViewModels
     {
         private readonly IDialogHostService dialogHost;
 
-        private readonly IEventAggregator aggregator;
+
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
             account = "";
             receiverName = "";
             search = "";
+            selectedIndex = 1;
             AddMethodSelectedIndex = -1;
             this.service = service;
-            toDoDtos = new ObservableCollection<ToDoDto>();
+            toDoDtos = [];
             currentTodo = new ToDoDto();
             currentUrgencyColor = "Black";
             maxPageCount = 10;
             pageIndex = 1;
             isSender = false;
-            isReceiver = false;
+            isReceiver = true;
             dialogHost = provider.Resolve<IDialogHostService>();
-            aggregator = provider.Resolve<IEventAggregator>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
+            SelectRadioCommand = new DelegateCommand<string>(SelectRadio);
             DeleteCommand = new DelegateCommand<ToDoDto>(Delete);
         }
 
@@ -116,7 +117,7 @@ namespace MyToDo.ViewModels
         public bool IsSender
         {
             get { return isSender; }
-            set { isSender = value; RaisePropertyChanged();Query(); }
+            set { isSender = value; }
         }
 
         private bool isReceiver;
@@ -124,7 +125,7 @@ namespace MyToDo.ViewModels
         public bool IsReceiver
         {
             get { return isReceiver; }
-            set { isReceiver = value; RaisePropertyChanged(); Query(); }
+            set { isReceiver = value; }
         }
 
         private static string MapUrgencyToColor(int? urgency)
@@ -163,11 +164,24 @@ namespace MyToDo.ViewModels
             set { addByName = value; RaisePropertyChanged(); }
         }
 
+        private void SelectRadio(string radioIndex)
+        {
+            switch(radioIndex)
+            {
+                case "0": IsSender = true; IsReceiver = false; break;
+                case "1": IsSender = false; IsReceiver = true; break;
+                case "2": IsSender = true; IsReceiver = true; break;
+            }
+            Query();
+        }
+
         public DelegateCommand<string> ExecuteCommand { get; private set; }
 
         public DelegateCommand<ToDoDto> SelectCommand { get; private set; }
 
         public DelegateCommand<ToDoDto> DeleteCommand { get; private set; }
+
+        public DelegateCommand<string> SelectRadioCommand { get; private set; }
 
         private bool isRightDrawerOpen;
 
@@ -234,7 +248,6 @@ namespace MyToDo.ViewModels
                     0 => null,
                     1 => 0,
                     2 => 1,
-                    3 => 2,
                     _ => throw new NotImplementedException()
                 };
                 var position = 0;

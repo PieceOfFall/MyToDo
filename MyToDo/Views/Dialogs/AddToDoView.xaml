@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:dialogs="clr-namespace:MyToDo.ViewModels.Dialogs" d:DataContext="{d:DesignInstance Type=dialogs:AddToDoViewModel}"
              mc:Ignorable="d" 
-             Width="450" Height="280">
+             Width="450" Height="380">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -18,21 +18,29 @@
 
         <DockPanel Grid.Row="1" LastChildFill="False">
             <StackPanel DockPanel.Dock="Top" Margin="20,0" Orientation="Horizontal">
-                <TextBlock Text="状态 : " VerticalAlignment="Center" />
+                <TextBlock Text="状态  " VerticalAlignment="Center" />
                 <ComboBox SelectedIndex="{Binding Model.Status}">
                     <ComboBoxItem>待办</ComboBoxItem>
                     <ComboBoxItem>已完成</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
 
-            <TextBox Margin="20,20" DockPanel.Dock="Top"
-                     Text="{Binding Model.Title}"
-                     md:HintAssist.Hint="请输入待办概要"/>
-            
-            <TextBox Margin="20,20" DockPanel.Dock="Top"
-                     Text="{Binding Model.Content}"
-                     TextWrapping="Wrap" AcceptsReturn="True"
-                     md:HintAssist.Hint="请输入内容"/>
+            <TextBlock DockPanel.Dock="Top" Margin="20,20,0,10">
+                <Run Text="发起人  "/>
+                <Run Text="{Binding Username}" Foreground="Gray"/>
+            </TextBlock>
+
+            <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
+                <TextBlock Text="标题     " VerticalAlignment="Center" Margin="0,0,10,0" />
+                <TextBox Text="{Binding Model.Title}" 
+                         md:HintAssist.Hint="请输入待办标题                                                                  "/>
+            </StackPanel>
+
+            <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
+                <TextBlock Text="内容     " VerticalAlignment="Center" Margin="0,0,10,0" />
+                <TextBox Text="{Binding Model.Content}" 
+             md:HintAssist.Hint="请输入待办内容                                                                  "/>
+            </StackPanel>
         </DockPanel>
 
         <StackPanel Margin="10" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">

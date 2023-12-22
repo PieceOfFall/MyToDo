@@ -155,6 +155,7 @@
                 <DockPanel DockPanel.Dock="Top" Margin="10, 5" LastChildFill="False">
                     <TextBlock Text="备忘录" FontSize="20" FontWeight="Bold" />
                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"  
+                            IsEnabled="False"
                         Width="40"
                         Height="40"
                         Command="{Binding ExecuteCommand}"

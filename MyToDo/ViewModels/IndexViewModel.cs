@@ -95,9 +95,9 @@ namespace MyToDo.ViewModels
             EditToDoCommand = new DelegateCommand<ToDoDto>(AddToDo);
             ToDoCompleteComand = new DelegateCommand<ToDoDto>(ToDoComplete);
             summary = new Summary();
-            taskBars = new ObservableCollection<TaskBar>();
-            toDoDtos = new ObservableCollection<ToDoDto>();
-            memoDtos = new ObservableCollection<MemoDto>();
+            taskBars = [];
+            toDoDtos = [];
+            memoDtos = [];
 
 /*            var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(10);

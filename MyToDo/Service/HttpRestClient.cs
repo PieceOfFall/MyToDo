@@ -55,8 +55,8 @@ namespace MyToDo.Service
                     }
                     /*aggregator.SendToast(new Common.Events.ToastModel()
                     {
-                        Title="ToDo",
-                        Message=response.Content
+                        Title = "ToDo",
+                        Message = response.Content
                     });*/
                     return apiResponse;
                 }

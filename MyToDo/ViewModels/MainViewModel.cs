@@ -29,8 +29,11 @@ namespace MyToDo.ViewModels
                 if (journal != null && journal.CanGoBack)
                 {
                     journal.GoBack();
+                    SelectedIndex = menuBars.Select((menu, i) => new { Menu = menu, Index = i })
+                                            .FirstOrDefault(x => x.Menu.NameSpace == journal.CurrentEntry.Uri.OriginalString)?.Index ?? -1;
                     PreviousVisibility = journal.CanGoBack ? "Visible" : "Hidden";
                     NextVisibility = journal.CanGoForward ? "Visible" : "Hidden";
+                    
                 }
             });
 
@@ -39,6 +42,8 @@ namespace MyToDo.ViewModels
                 if (journal != null && journal.CanGoForward)
                 {
                     journal.GoForward();
+                    SelectedIndex = menuBars.Select((menu, i) => new { Menu = menu, Index = i })
+                                            .FirstOrDefault(x => x.Menu.NameSpace == journal.CurrentEntry.Uri.OriginalString)?.Index ?? -1;
                     PreviousVisibility = journal.CanGoBack ? "Visible" : "Hidden";
                     NextVisibility = journal.CanGoForward ? "Visible" : "Hidden";
                 }
@@ -104,7 +109,7 @@ namespace MyToDo.ViewModels
         private void CreateMenuBar()
         {
             MenuBars.Add(new MenuBar() { Icon = "Home", Title = "首页", NameSpace = "IndexView" });
-            MenuBars.Add(new MenuBar() { Icon = "NotebookOutline", Title = "待办事项", NameSpace = "ToDoView" });
+            MenuBars.Add(new MenuBar() { Icon = "NotebookOutline", Title = "所有事项", NameSpace = "ToDoView" });
             MenuBars.Add(new MenuBar() { Icon = "NotebookPlus", Title = "备忘录", NameSpace = "MemoView" });
             MenuBars.Add(new MenuBar() { Icon = "Cog", Title = "设置", NameSpace = "SettingsView" });
         }

@@ -11,6 +11,7 @@ namespace MyToDo.ViewModels.Dialogs
     {
         public AddToDoViewModel()
         {
+            username = AppSession.Username;
             SaveCommand = new DelegateCommand(Save);
             CancelCommand = new DelegateCommand(Cancel);
         }
@@ -26,6 +27,14 @@ namespace MyToDo.ViewModels.Dialogs
         {
             get { return model; }
             set { model = value; RaisePropertyChanged(); }
+        }
+
+        private string username;
+
+        public string Username
+        {
+            get { return username; }
+            set { username = value; RaisePropertyChanged(); }
         }
 
         private void Save()
