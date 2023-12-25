@@ -296,7 +296,7 @@
 
 
                                         <!-- 装饰背景⚪ -->
-                                        <Canvas ClipToBounds="True" Grid.RowSpan="2">
+                                        <Canvas ClipToBounds="True" Grid.RowSpan="3">
                                             <Border CornerRadius="100" Canvas.Top="10" Canvas.Right="-50" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
                                             <Border CornerRadius="100" Canvas.Top="80" Canvas.Right="-30" Width="120" Height="120" Background="#FFFFFF" Opacity="0.1" />
                                         </Canvas>

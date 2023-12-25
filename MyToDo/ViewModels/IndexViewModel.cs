@@ -215,7 +215,7 @@ namespace MyToDo.ViewModels
             {
                 todoTimer.Change(500,Timeout.Infinite);
             }
-            dto.Status = 2;
+            dto.Status = 1;
             var ret = await toDoService.UpdateAsync(dto);
             if(ret.data >0)
             {

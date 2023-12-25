@@ -27,9 +27,9 @@
             <ColumnDefinition Width="1.2*" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        
 
-        <Image Source="/Images/logo.png" Margin="60" />
+
+        <Image  Grid.Column="0" Source="/Images/logo.png" Margin="60" />
 
         <md:Snackbar x:Name="LoginSnackBar" Panel.ZIndex="1" MessageQueue="{md:MessageQueue}" Grid.ColumnSpan="2" />
 

@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" 
-
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:dialogs="clr-namespace:MyToDo.ViewModels.Dialogs" d:DataContext="{d:DesignInstance Type=dialogs:AddToDoViewModel}"
              mc:Ignorable="d" 
              Width="500" Height="480">
     <Grid>
@@ -34,19 +33,20 @@
 
             <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock Text="办事人     " VerticalAlignment="Center" Margin="0,0,0,0" />
-                <TextBox Text="{Binding Model.ReceiverName}" 
+                <TextBox Text="{Binding Model.ReceiverName}" GotFocus="MyPopup_GotFocus"
              md:HintAssist.Hint="请输入办事人名称                                                                  "/>
             </StackPanel>
 
             <StackPanel Margin="20,10" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock Text="标题     " VerticalAlignment="Center" Margin="0,0,10,0" />
                 <TextBox Text="{Binding Model.Title}" 
+                         GotFocus="MyPopup_GotFocus"
                          md:HintAssist.Hint="请输入待办标题                                                                  "/>
             </StackPanel>
 
             <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock Text="内容     " VerticalAlignment="Center" Margin="0,0,10,0" />
-                <TextBox Text="{Binding Model.Content}" 
+                <TextBox Text="{Binding Model.Content}" GotFocus="MyPopup_GotFocus"
              md:HintAssist.Hint="请输入待办内容                                                                  "/>
             </StackPanel>
 
