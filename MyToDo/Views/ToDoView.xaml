@@ -37,7 +37,7 @@
                     <StackPanel Margin="20,10,20,10" Orientation="Horizontal" DockPanel.Dock="Top">
                         <TextBlock Text="状态 : " VerticalAlignment="Center"/>
                         <ComboBox SelectedIndex="{Binding CurrentTodo.Status}">
-                            <ComboBoxItem>待办</ComboBoxItem>
+                            <ComboBoxItem>未完成</ComboBoxItem>
                             <ComboBoxItem>已完成</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
@@ -80,15 +80,15 @@
                         </ComboBox>
                     </DockPanel>
                     <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
-                        <TextBlock VerticalAlignment="Center" Text="概要 :"/>
-                        <TextBox Text="{Binding CurrentTodo.Title}" Margin="10" md:HintAssist.Hint="请输入待办概要" DockPanel.Dock="Top" />
+                        <TextBlock VerticalAlignment="Center" Text="标题 :"/>
+                        <TextBox Text="{Binding CurrentTodo.Title}" Margin="10" md:HintAssist.Hint="请输入待办标题" DockPanel.Dock="Top" />
                     </DockPanel>
 
                     <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10" MaxHeight="210">
                         <TextBlock  VerticalAlignment="Center" Text="内容 :"/>
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <TextBox AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding CurrentTodo.Content}" Margin="15"
-                                     md:HintAssist.Hint="请输入待办内容" DockPanel.Dock="Top" MaxLength="255" />
+                                     md:HintAssist.Hint="请输入待办内容" DockPanel.Dock="Top" MaxLength="1023" />
                         </ScrollViewer>
                     </DockPanel>
 
@@ -201,7 +201,7 @@
                     <TextBlock Text="筛选：" Foreground="#9F9F9F" VerticalAlignment="Center" Margin="10,10,10,0" />
                     <ComboBox SelectedIndex="{Binding SelectedIndex}">
                         <ComboBoxItem>全部</ComboBoxItem>
-                        <ComboBoxItem>待办</ComboBoxItem>
+                        <ComboBoxItem>未完成</ComboBoxItem>
                         <ComboBoxItem>已完成</ComboBoxItem>
                     </ComboBox>
 

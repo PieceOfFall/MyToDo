@@ -24,12 +24,17 @@ namespace MyToDo
             return Container.Resolve<MainView>();
         }
 
+        private static WebSocketClient WebSocketClient { get; set; }
+
 
         public static void LoginOut(IContainerProvider provider)
         {
             var mainViewModel = provider.Resolve<MainViewModel>();
             
             Current.MainWindow.Hide();
+
+            var ws = provider.Resolve<WebSocketClient>();
+            ws.Disconnect();
 
             var dialogService = provider.Resolve<IDialogService>();
 
@@ -42,6 +47,7 @@ namespace MyToDo
                 }
                 if (Current.MainWindow.DataContext is IConfigureService service)
                     service.Configure();
+                ws.Init(AppSession.Token);
                 Current.MainWindow.Show();
             });
         }
@@ -59,6 +65,8 @@ namespace MyToDo
                 }
                 if (Current.MainWindow.DataContext is IConfigureService service)
                     service.Configure();
+                var ws = Container.Resolve<WebSocketClient>();
+                ws.Init(AppSession.Token);
                 base.OnInitialized();
             });
         }
@@ -66,6 +74,7 @@ namespace MyToDo
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.GetContainer().Register<WebSocketClient>();
             containerRegistry.GetContainer()
                 .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
             containerRegistry.GetContainer().RegisterInstance(@"http://192.168.3.219:8989/", serviceKey: "webUrl");

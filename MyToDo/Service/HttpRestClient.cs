@@ -1,5 +1,4 @@
-﻿using ImTools;
-using MyToDo.Common;
+﻿using MyToDo.Common;
 using MyToDo.Common.Models;
 using MyToDo.Extensions;
 using Prism.Events;
@@ -9,19 +8,13 @@ using System.Text.Json;
 
 namespace MyToDo.Service
 {
-    public class HttpRestClient
+    public class HttpRestClient(string apiUrl)
     {
 
-        protected readonly RestClient client;
-        private readonly string apiUrl;
-
-        private static IEventAggregator aggregator = ContainerLocator.Current.Resolve<IEventAggregator>();
-
-        public HttpRestClient(string apiUrl)
-        {
-            this.apiUrl = apiUrl;
-            client = new RestClient(apiUrl);
-        }
+        protected readonly RestClient client = new(apiUrl);
+        private readonly string apiUrl = apiUrl;
+        
+        private static readonly IEventAggregator aggregator = ContainerLocator.Current.Resolve<IEventAggregator>();
 
         public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest baseRequest)
         {

@@ -25,7 +25,7 @@ namespace MyToDo.ViewModels
 
         private readonly ILoginService loginService;
 
-        public string Title { get; set; } = "骑鲸TODO";
+        public string Title { get; set; } = "骑鲸协同";
 
         public event Action<IDialogResult> RequestClose;
 

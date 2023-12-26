@@ -19,8 +19,8 @@ namespace MyToDo.ViewModels
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
-            receiverName = "";
-            search = "";
+            receiverName = string.Empty;
+            search = string.Empty;
             selectedIndex = 1;
             AddMethodSelectedIndex = -1;
             this.service = service;
@@ -29,6 +29,7 @@ namespace MyToDo.ViewModels
             currentUrgencyColor = "Black";
             maxPageCount = 10;
             pageIndex = 1;
+            sender = string.Empty;
             isSender = false;
             isReceiver = true;
             isEnableDeleteButton = false;
@@ -308,6 +309,7 @@ namespace MyToDo.ViewModels
                 else
                 {
                     //添加
+                    CurrentTodo.ReceiverName = ReceiverName;
                     ApiResponse<int>? ret = null;
                     if (AddById)
                     {
