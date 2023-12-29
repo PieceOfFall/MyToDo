@@ -12,10 +12,14 @@ namespace MyToDo.Service
         private readonly IEventAggregator aggregator = aggregator;
         private WebSocket? ws;
 
+
+        public static bool IsNeedToClose = false;
+
+
         public async void Init(string token)
         {
             // WebSocket 地址
-            string url = "ws://127.0.0.1:18989/websocket";
+            string url = "ws://192.168.3.219:18989/websocket";
 
             // 创建 WebSocket 客户端
             ws = new WebSocket(url);
@@ -76,9 +80,24 @@ namespace MyToDo.Service
             };
 
             // 在关闭连接时的事件处理
-            ws.OnClose += (sender, e) =>
+            ws.OnClose += async(sender, e) =>
             {
-                Console.WriteLine("WebSocket closed");
+                if (e.Reason.Trim() == "An exception has occurred while receiving.")
+                {
+                    // 服务端连接异常，反复PING后台服务，直到后台正常后再次连接ws
+                    while (true)
+                    {
+                        await Task.Delay(1000);
+                        ws.Connect();
+                        if (ws.ReadyState == WebSocketState.Open)
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("WebSocket closed");
+                }
+
             };
 
             // 在发生错误时的事件处理
@@ -90,16 +109,16 @@ namespace MyToDo.Service
             // 启动 WebSocket 连接
             ws.Connect();
 
+            
+            IsNeedToClose = false;
             // 阻塞主线程，保持 WebSocket 连接
-            while (ws.ReadyState == WebSocketState.Open)
+            while (!IsNeedToClose)
             {
                 await Task.Delay(1000); // 可以根据需要调整延迟
             }
+            ws.Close(CloseStatusCode.Normal, "Connection closed by the client");
+            
         }
 
-        public void Disconnect()
-        {
-            ws?.Close();
-        }
     }
 }

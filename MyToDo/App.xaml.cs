@@ -31,7 +31,7 @@ namespace MyToDo
             Current.MainWindow.Hide();
 
             var ws = provider.Resolve<WebSocketClient>();
-            ws.Disconnect();
+            WebSocketClient.IsNeedToClose = true;
 
             var dialogService = provider.Resolve<IDialogService>();
 

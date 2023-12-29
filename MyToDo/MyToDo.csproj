@@ -9,6 +9,7 @@
     <UseWindowsForms>False</UseWindowsForms>
     <ApplicationIcon>Images\favicon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>骑鲸协同</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
