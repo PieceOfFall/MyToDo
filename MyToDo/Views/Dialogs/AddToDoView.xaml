@@ -43,8 +43,8 @@
 
             <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock Text="办事人     " VerticalAlignment="Center" Margin="0,0,0,0" />
-                <TextBox Text="{Binding Model.ReceiverName}" GotFocus="MyPopup_GotFocus"
-             md:HintAssist.Hint="请输入办事人名称                                                              "/>
+                <TextBox Name="receiverBox" Text="{Binding Model.ReceiverName}" GotFocus="MyPopup_GotFocus" KeyUp="TextBox_KeyUp" TextChanged="TextBox_TextChanged"
+                        md:HintAssist.Hint="请输入办事人名称                                                              "/>
             </StackPanel>
 
             <StackPanel Margin="20,10" Orientation="Horizontal" DockPanel.Dock="Top" >
@@ -77,7 +77,7 @@
 
             <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock  VerticalAlignment="Center" Text="紧急程度  "/>
-                <ComboBox SelectedIndex="{Binding UrgencySelectedIndex}" Margin="10,0,0,0"
+                <ComboBox SelectedIndex="{Binding UrgencySelectedIndex,Mode=TwoWay}" Margin="10,0,0,0"
                           md:HintAssist.Hint="请选择紧急度">
                     <ComboBoxItem Background="Red" Content="紧 急 重 要" />
                     <ComboBoxItem Background="#d4675f" Content="不 紧 急 重 要" />

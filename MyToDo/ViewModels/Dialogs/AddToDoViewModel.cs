@@ -90,6 +90,9 @@ namespace MyToDo.ViewModels.Dialogs
                 IsEdit = true;
                 Model = parameters.GetValue<ToDoDto>("Value");
                 Model.ReceiverName = AppSession.Username;
+                if(Model.Urgency!= null)
+                    UrgencySelectedIndex = (3 - (int)Model.Urgency);
+
             }
             else
             {

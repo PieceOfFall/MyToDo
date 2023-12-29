@@ -24,9 +24,6 @@ namespace MyToDo
             return Container.Resolve<MainView>();
         }
 
-        private static WebSocketClient WebSocketClient { get; set; }
-
-
         public static void LoginOut(IContainerProvider provider)
         {
             var mainViewModel = provider.Resolve<MainViewModel>();
@@ -77,7 +74,7 @@ namespace MyToDo
             containerRegistry.GetContainer().Register<WebSocketClient>();
             containerRegistry.GetContainer()
                 .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
-            containerRegistry.GetContainer().RegisterInstance(@"http://192.168.3.219:8989/", serviceKey: "webUrl");
+            containerRegistry.GetContainer().RegisterInstance(@"http://192.168.3.219:18989/", serviceKey: "webUrl");
 
             // 服务
             containerRegistry.Register<ILoginService, LoginService>();

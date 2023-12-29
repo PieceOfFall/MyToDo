@@ -23,6 +23,8 @@ namespace MyToDo.ViewModels
 
         private readonly IMemoService memoService;
 
+        private readonly IRegionManager regionManager;
+
         // 标志位，检查是否正在进行完成待办Command
         private bool isToDoCompleting = false;
 
@@ -34,7 +36,7 @@ namespace MyToDo.ViewModels
 
         public Summary Summary
         {
-            get => summary;
+            get => summary!;
             set { summary = value; RaisePropertyChanged(); }
         }
 
@@ -76,6 +78,8 @@ namespace MyToDo.ViewModels
             set { dayOfWeek = value; RaisePropertyChanged(); }
         }
 
+        private MainViewModel mainViewModel;
+
         private ObservableCollection<TaskBar> taskBars;
         private ObservableCollection<ToDoDto> toDoDtos;
         private ObservableCollection<MemoDto> memoDtos;
@@ -89,24 +93,17 @@ namespace MyToDo.ViewModels
             Day = currentDate.Day.ToString();
             DayOfWeek = currentDate.DayOfWeek.ToString();
             this.dialog = dialog;
+            regionManager = provider.Resolve<IRegionManager>();
             toDoService = provider.Resolve<IToDoService>();
             memoService = provider.Resolve<IMemoService>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             EditToDoCommand = new DelegateCommand<ToDoDto>(AddToDo);
             ToDoCompleteComand = new DelegateCommand<ToDoDto>(ToDoComplete);
+            NavigateCommand = new DelegateCommand<TaskBar>(Navigate);
             summary = new Summary();
             taskBars = [];
             toDoDtos = [];
             memoDtos = [];
-
-/*            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(10);
-            timer.Tick += (s, e) =>
-            {
-                HandyControl.Controls.NotifyIcon.ShowBalloonTip("HandyControl", "Hello", NotifyIconInfoType.None, "123");
-
-            };
-            timer.Start();*/
             
         }
 
@@ -117,6 +114,8 @@ namespace MyToDo.ViewModels
         public DelegateCommand<ToDoDto> EditToDoCommand { get; private set; }
 
         public DelegateCommand<ToDoDto> ToDoCompleteComand { get; private set; }
+
+        public DelegateCommand<TaskBar> NavigateCommand { get; private set; }
 
         public ObservableCollection<TaskBar> TaskBars
         {
@@ -141,10 +140,10 @@ namespace MyToDo.ViewModels
         void CreateTaskBars(Summary summary)
         {
             TaskBars.Clear();
-            TaskBars.Add(new TaskBar() { Icon = "ClockFast", Title = "汇总", Color = "#FF0CA0FF", Content = $"{summary.Sum}" });
-            TaskBars.Add(new TaskBar() { Icon = "ClockCheckOutline", Title = "已完成", Color = "#FF1ECA3A", Content = $"{summary.CompletedCount}" });
-            TaskBars.Add(new TaskBar() { Icon = "ChartLineVariant", Title = "完成比例", Color = "#FF02C6DC", Content = summary.CompletedRatio });
-            TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录 (敬请期待...)", Color = "#FFFFA000", Content = string.Empty });
+            TaskBars.Add(new TaskBar() { Icon = "ClockFast", Title = "汇总", Color = "#ef5777", Content = $"{summary.Sum}", Target="ToDoView" });
+            TaskBars.Add(new TaskBar() { Icon = "ClockCheckOutline", Title = "已完成", Color = "#4bcffa", Content = $"{summary.CompletedCount}", Target = "ToDoView" });
+            TaskBars.Add(new TaskBar() { Icon = "ChartLineVariant", Title = "完成比例", Color = "#05c46b", Content = summary.CompletedRatio });
+            TaskBars.Add(new TaskBar() { Icon = "PlaylistStar", Title = "备忘录 (敬请期待...)", Color = "#d2dae2", Content = string.Empty });
         }
 
         private async void  RefreshTaskBars()
@@ -221,6 +220,24 @@ namespace MyToDo.ViewModels
                 GetTodos();
                 RefreshTaskBars();
             }
+        }
+
+        private void Navigate(TaskBar bar)
+        {
+            if(string.IsNullOrWhiteSpace(bar.Target)) 
+                return;
+            var param = new NavigationParameters();
+
+            if(bar.Title == "已完成")
+            {
+                param.Add("Value", 2);
+            } 
+            else if(bar.Title == "汇总")
+            {
+                param.Add("Value", 0);
+            }
+
+            regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(bar.Target, param);
         }
 
         void AddMemo()

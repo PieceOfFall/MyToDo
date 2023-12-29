@@ -2,10 +2,12 @@
 using MyToDo.Common.Models;
 using MyToDo.Extensions;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
+
 
 
 namespace MyToDo.ViewModels
@@ -14,6 +16,7 @@ namespace MyToDo.ViewModels
     {
 
         public MainViewModel(IContainerProvider containerProvider,
+            IEventAggregator aggregator,
             IRegionManager  regionManager)
         {
             menuBars = [];
@@ -23,6 +26,12 @@ namespace MyToDo.ViewModels
             username = string.Empty;
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
             LogOutCommand = new DelegateCommand(LogOut);
+
+
+            aggregator.RegisterMenuIndex(arg =>
+            {
+                SelectedIndex = arg.Index;
+            });
 
             GoBackCommand = new DelegateCommand(() =>
             {
@@ -114,11 +123,20 @@ namespace MyToDo.ViewModels
             MenuBars.Add(new MenuBar() { Icon = "Cog", Title = "设置", NameSpace = "SettingsView" });
         }
 
+        public void Navigate(string target)
+        {
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(target, cb =>
+            {
+                SelectedIndex = 3;
+            });
+            
+        }
+
         private void Navigate(MenuBar bar)
         {
+
             if (bar == null || string.IsNullOrWhiteSpace(bar.Title))
                 return;
-
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(bar.NameSpace, back =>
             {
                 if(back.Context!=null)
@@ -148,6 +166,7 @@ namespace MyToDo.ViewModels
             if (MenuBars.Count == 0)
                 CreateMenuBar();
             Username = AppSession.Username;
+            
         }
     }
 }

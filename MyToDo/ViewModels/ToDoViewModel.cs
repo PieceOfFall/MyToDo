@@ -7,7 +7,7 @@ using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using System.Collections.ObjectModel;
-using System.Text.Json;
+using System.Windows;
 
 namespace MyToDo.ViewModels
 {
@@ -15,7 +15,9 @@ namespace MyToDo.ViewModels
     {
         private readonly IDialogHostService dialogHost;
 
+        private readonly MainViewModel mainViewModel;
 
+        //private readonly IEventAggregator aggregator;
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
         {
@@ -33,6 +35,8 @@ namespace MyToDo.ViewModels
             isSender = false;
             isReceiver = true;
             isEnableDeleteButton = false;
+            isEnableDeleteButton = false;
+            //aggregator = provider.Resolve<IEventAggregator>();
             dialogHost = provider.Resolve<IDialogHostService>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
@@ -49,7 +53,12 @@ namespace MyToDo.ViewModels
         public bool IsEdit
         {
             get { return isEdit; }
-            set { isEdit = value; RaisePropertyChanged(); }
+            set 
+            {
+                isEdit = value;
+                IsAddByName = (!isEdit & AddByName);
+                RaisePropertyChanged(); 
+            }
         }
 
         private string receiverName;
@@ -121,7 +130,7 @@ namespace MyToDo.ViewModels
             set 
             { 
                 isReceiver = value;
-                if (value)
+                if (value && isSender == false)
                     IsEnableDeleteButton = false;
                 else
                     IsEnableDeleteButton = true;
@@ -135,6 +144,15 @@ namespace MyToDo.ViewModels
             get { return isEnableDeleteButton; }
             set { isEnableDeleteButton = value; RaisePropertyChanged(); }
         }
+
+        private bool isAddByName;
+
+        public bool IsAddByName
+        {
+            get { return isAddByName; }
+            set { isAddByName = value; RaisePropertyChanged(); }
+        }
+
 
 
         private static string MapUrgencyToColor(int? urgency)
@@ -170,7 +188,12 @@ namespace MyToDo.ViewModels
         public bool AddByName
         {
             get { return addByName; }
-            set { addByName = value; RaisePropertyChanged(); }
+            set 
+            { 
+                addByName = value;
+                IsAddByName = (!isEdit & AddByName);
+                RaisePropertyChanged(); 
+            }
         }
 
         private void SelectRadio(string radioIndex)
@@ -238,7 +261,7 @@ namespace MyToDo.ViewModels
             switch(operation)
             {
                 case "新增":  Add()   ;break;
-                case "查询":  Query() ;break;
+                case "查询": SearchInputQuery(); break;
                 case "保存":  Save()  ;break;
                 case "页码更新": Query(); break;
                 case "选择添加方式": ChooseAddMethod();break;
@@ -246,12 +269,34 @@ namespace MyToDo.ViewModels
             }
         }
 
+        private Timer? searchTimer = null;
+
+        private void SearchInputQuery()
+        {
+            if (searchTimer == null)
+            {
+                
+                searchTimer = new Timer((e) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Query();
+                        searchTimer?.Dispose();
+                        searchTimer = null;
+                    });
+                    
+                },null,500,Timeout.Infinite);
+            }
+            else
+            {
+                searchTimer.Change(500, Timeout.Infinite);
+            }
+        }
+
         private async void Query()
         {
-            UpdateLoading(true);
             try
             {
-                ToDoDtos.Clear();
                 int? Status = SelectedIndex switch
                 {
                     0 => null,
@@ -270,6 +315,7 @@ namespace MyToDo.ViewModels
 
                 if (todoRet.data != null)
                 {
+                    ToDoDtos.Clear();
                     // 更新分页
                     MaxPageCount = todoRet.data.pages;
                     PageIndex = todoRet.data.pageNum;
@@ -284,7 +330,6 @@ namespace MyToDo.ViewModels
             {
 
             }
-            finally { UpdateLoading(false); }
         }
 
         private async void Save()
@@ -343,9 +388,8 @@ namespace MyToDo.ViewModels
         {
             switch(AddMethodSelectedIndex)
             {
-                case 0: AddById = true; AddByName = false; break;
-                case 1: AddByName = true; AddById = false; break;
-                case 2: AddById = false; AddByName = false; break;
+                case 0: AddByName = true; AddById = false; break;
+                case 1: AddById = false; AddByName = false; break;
             }
         }
 
@@ -354,12 +398,14 @@ namespace MyToDo.ViewModels
             CurrentTodo.Urgency = 3 - UrgencySelectedIndex;
         }
 
+
         private void Add()
         {
             ReceiverName = "";
             Sender = "";
             ReceiverName = "";
             IsEdit = false;
+            AddMethodSelectedIndex = 0;
             IsRightDrawerOpen = true;
             CurrentTodo = new ToDoDto
             {
@@ -408,11 +454,32 @@ namespace MyToDo.ViewModels
                 Query();
             }
         }
-
+        private bool isChanging = false;
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
-            Query();
+
+            aggregator.SendMenuIndex(new Common.Events.MenuIndexModel
+            {
+                Index = 1
+            });
+            if (navigationContext.Parameters.ContainsKey("Value"))
+            {
+                SelectedIndex = navigationContext.Parameters.GetValue<int>("Value");
+                var timer = new System.Timers.Timer(500);
+                isChanging = true;
+                timer.Elapsed += (s, q) =>
+                {
+                    isChanging = false;
+                    ((System.Timers.Timer)s!).Stop();
+                };
+                timer.Start();
+            }
+            else
+            {
+                if (isChanging) return;
+                SelectedIndex = 1;
+            }
         }
     }
 }

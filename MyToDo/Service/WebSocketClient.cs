@@ -1,5 +1,7 @@
-﻿using MyToDo.Extensions;
+﻿using MyToDo.Common.Models;
+using MyToDo.Extensions;
 using Prism.Events;
+using System.Text.Json;
 using System.Windows;
 using WebSocketSharp;
 
@@ -13,7 +15,7 @@ namespace MyToDo.Service
         public async void Init(string token)
         {
             // WebSocket 地址
-            string url = "ws://127.0.0.1:8989/websocket";
+            string url = "ws://127.0.0.1:18989/websocket";
 
             // 创建 WebSocket 客户端
             ws = new WebSocket(url);
@@ -36,14 +38,36 @@ namespace MyToDo.Service
             {
                 try
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
+                    
+                    var msg = JsonSerializer.Deserialize<WebsocketMsg>(e.Data);
+                    switch(msg!.Content)
                     {
-                        aggregator.SendToast(new Common.Events.ToastModel()
-                        {
-                            Title = "骑鲸协同",
-                            Message = $"标题: {e.Data}\n已到期！"
-                        });
-                    });
+                        case "new":
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    aggregator.SendToast(new Common.Events.ToastModel()
+                                    {
+                                        Title = "你有新的事情啦！",
+                                        Message = $"\n标题：{msg.Title}"
+                                    });
+                                });
+                                break;
+                            }
+                        case "overdue":
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    aggregator.SendToast(new Common.Events.ToastModel()
+                                    {
+                                        Title = "任务截至啦!",
+                                        Message = $"标题为 {msg.Title}\n的任务已到期！"
+                                    });
+                                });
+                                break;
+                            }
+                    }
+                    
                 }
                 catch (Exception)
                 {

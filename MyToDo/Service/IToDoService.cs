@@ -14,5 +14,7 @@ namespace MyToDo.Service
         Task<ApiResponse<int?>> FindIdByUserName(string receiverName);
 
         Task<ApiResponse<int>> AddAsyncByName(ToDoDto todo);
+
+        Task<ApiResponse<List<string>>> queryFullNameByFragment(string name);
     }
 }

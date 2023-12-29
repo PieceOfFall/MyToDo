@@ -7,16 +7,14 @@ namespace MyToDo.Common.Models
 	// 待办实体
     public class ToDoDto : BaseDto
     {
-        private string title;
-        private string content;
+        private string title = string.Empty;
+        private string content = string.Empty;
         private int status;
         private int? receiverId;
         private int? urgency;
 		private DateTime dueDate;
-        private string dueDateStr;
+        private string dueDateStr = string.Empty;
         private string receiverName = string.Empty;
-
-
 
 
         // 标题

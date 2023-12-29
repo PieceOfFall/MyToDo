@@ -56,8 +56,18 @@
                                  Visibility="{Binding AddById,Converter={StaticResource boolToVisibility}}"
                                  Text="{Binding CurrentTodo.ReceiverId,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人id">
                         </TextBox>
-                        <TextBox IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
-                                  Visibility="{Binding AddByName,Converter={StaticResource boolToVisibility}}"
+                        <ComboBox   MinWidth="68"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,10,15"
+                                    IsEditable="True"
+                                    Name="dynamicComboBox"
+                                    TextBoxBase.SelectionChanged="DynamicComboBox_SelectionChanged"
+                                    Visibility="{Binding IsAddByName,Converter={StaticResource boolToVisibility}}"
+                                    md:HintAssist.Hint="请输入办理人姓名"
+                                    Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                        
+                        <TextBox  x:Name="receiverTextBox" IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
+                                  Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
                                   Text="{Binding ReceiverName,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人姓名">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="TextChanged">
@@ -68,7 +78,6 @@
                         <ComboBox Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}"
                                   SelectedIndex="{Binding AddMethodSelectedIndex}"
                                   md:HintAssist.Hint="请选择查找方式">
-                            <ComboBoxItem Content=" ID 查找" />
                             <ComboBoxItem Content="姓名查找" />
                             <ComboBoxItem Content="部门查找" />
                             <i:Interaction.Triggers>
@@ -145,9 +154,11 @@
 
                     <TextBox Width="250" md:HintAssist.Hint="查找待办事项..." Text="{Binding Search,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                              Margin="40,0,0,0" md:TextFieldAssist.HasClearButton="True" VerticalAlignment="Center">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding ExecuteCommand}" CommandParameter="查询" />
-                        </TextBox.InputBindings>    
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="TextChanged">
+                                <i:InvokeCommandAction Command="{Binding ExecuteCommand}"  CommandParameter="查询"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </TextBox>
 
 

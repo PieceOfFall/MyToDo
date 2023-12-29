@@ -55,5 +55,16 @@ namespace MyToDo.Service.impl
             };
             return await client.ExecuteAsync<int>(request);
         }
+
+        public async Task<ApiResponse<List<string>>> queryFullNameByFragment(string name)
+        {
+            var request = new BaseRequest
+            {
+                Method = RestSharp.Method.Get,
+                Route = "todos/query/account",
+                Parameter = new {name}
+            };
+            return await client.ExecuteAsync<List<string>>(request);
+        }
     }
 }

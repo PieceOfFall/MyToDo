@@ -8,9 +8,10 @@ namespace MyToDo.Common.Events
     }
 
     public class ToastModel
-        {
+    {
+
         public string Message { get; set; } = "";
 
         public string Title { get; set; } = "";
     }
-    }
+}

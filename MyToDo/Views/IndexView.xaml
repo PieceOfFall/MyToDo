@@ -11,6 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <cv:IntToBoolConverter x:Key="intToBool"/>
+        <cv:UrgencyToUrgencyStrConverter x:Key="urgencyToStr" />
     </UserControl.Resources>
     
     <Grid>
@@ -51,7 +52,14 @@
                         CornerRadius="5"
                         Background="{Binding Color}" 
                         Margin="10">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"
+                                          CommandParameter="{Binding}"/>
+                        </Border.InputBindings>
+                        
                         <Border.Style>
+                            
                             <Style TargetType="Border">
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
@@ -63,6 +71,7 @@
                                                     BlurRadius="10"/>
                                             </Setter.Value>
                                         </Setter>
+                                        <Setter Property="Cursor" Value="Hand" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -138,7 +147,21 @@
                                     </ToggleButton.Style>
                                 </ToggleButton>
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+
+                                    <Grid Width="600">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2.7*" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+
+                                        <TextBlock Grid.Column="1" VerticalAlignment="Center" 
+                                                   FontSize="13" FontWeight="Light" Foreground="LightGray">
+                                            <Run Text="紧急度: "/>
+                                            <Run Text="{Binding Urgency,Converter={StaticResource urgencyToStr}}"/>
+                                        </TextBlock>
+                                    </Grid>
+
                                     <TextBlock Text="{Binding Content}" Margin="0,5"  Opacity="0.5" />
                                 </StackPanel>
                             </DockPanel>

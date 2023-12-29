@@ -24,7 +24,7 @@
     
     <Grid Background="#FFC600">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1.1*" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
@@ -35,21 +35,33 @@
 
         <DockPanel Grid.Column="1" LastChildFill="False" VerticalAlignment="Center" Margin="15">
             <TextBlock Text="欢迎使用" FontSize="22" FontWeight="Bold"
-                       Margin="0,10" DockPanel.Dock="Top"/>
+                       Margin="70,10" DockPanel.Dock="Top"/>
 
-            <TextBox BorderBrush="Black" Margin="0,10" 
-                     Text="{Binding Account}"
-                     md:HintAssist.Hint=" 请输入账号" DockPanel.Dock="Top" />
-            <PasswordBox BorderBrush="Black" Margin="0,10" 
-                         password:PasswordExtentions.Password="{Binding Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                         md:HintAssist.Hint=" 请输入密码" DockPanel.Dock="Top">
-                <i:Interaction.Behaviors>
-                    <password:PasswordBehavior/>
-                </i:Interaction.Behaviors>
-                <PasswordBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding ExecuteCommand}" CommandParameter="Login" />
-                </PasswordBox.InputBindings>
-            </PasswordBox>
+            <StackPanel Margin="0,10" DockPanel.Dock="Top" Orientation="Horizontal">
+                <md:PackIcon Kind="Account" Margin="5,0" VerticalAlignment="Center" />
+                <TextBox BorderBrush="Black" 
+                         Text="{Binding Account,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         md:HintAssist.Hint=" 请输入账号                                         " >
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding ExecuteCommand}" CommandParameter="Login"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+
+            <StackPanel Margin="0,10" DockPanel.Dock="Top" Orientation="Horizontal">
+                <md:PackIcon Kind="Key" Margin="5,0" VerticalAlignment="Center" />
+                <PasswordBox BorderBrush="Black"
+                             password:PasswordExtentions.Password="{Binding Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                             md:HintAssist.Hint=" 请输入密码                                         ">
+                    <i:Interaction.Behaviors>
+                        <password:PasswordBehavior/>
+                    </i:Interaction.Behaviors>
+                    <PasswordBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding ExecuteCommand}" CommandParameter="Login" />
+                    </PasswordBox.InputBindings>
+                </PasswordBox>
+            </StackPanel>
+                
 
             <Button Command="{Binding ExecuteCommand}"
                     CommandParameter="Login"
