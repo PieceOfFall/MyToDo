@@ -1,14 +1,13 @@
 ﻿using MyToDo.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyToDo.Service
 {
     public interface ILoginService
     {
         Task<ApiResponse<string>> LoginAsync(UserDto user);
+
+        Task<ApiResponse<DepartmentDto>> GetDeptTreeAsync();
+
+        Task<ApiResponse<List<string>>> GetDeptEmployeesAsync(int deptId);
     }
 }

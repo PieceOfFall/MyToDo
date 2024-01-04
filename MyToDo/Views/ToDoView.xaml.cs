@@ -1,9 +1,10 @@
-﻿using MyToDo.Service;
+﻿using MyToDo.Common.Models;
+using MyToDo.Extensions;
+using MyToDo.Service;
 using Prism.Events;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace MyToDo.Views
 {
@@ -19,12 +20,18 @@ namespace MyToDo.Views
         Timer? getNameTimer;
 
         IToDoService toDoService { get; set; }
+        ILoginService loginService { get; set; }
 
-        public ToDoView(IToDoService toDoService)
+        IEventAggregator aggregator { get; set; }
+
+        public ToDoView(IToDoService toDoService,ILoginService loginService,
+            IEventAggregator aggregator)
         {
             InitializeComponent();
             comboBoxItems = [];
             this.toDoService = toDoService;
+            this.loginService = loginService;
+            this.aggregator = aggregator;
             dynamicComboBox.ItemsSource = comboBoxItems;
         }
 
@@ -78,6 +85,45 @@ namespace MyToDo.Views
                 comboBoxItems.Add(item);
             }
         }
-        
+
+        private void TreeViewBtnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var btn = sender as Button;
+            aggregator.SendLogicToVm(new Common.Events.LogicToVmModel
+            {
+                VmName = "ToDoViewModel",
+                Data = btn!.Content
+            });
+        }
+
+        private async void TreeView_Expanded(object sender, RoutedEventArgs e)
+        {
+            var tree = (TreeViewItem)sender;
+            var selectedItem = tree.Items;
+            
+            var vm = tree.DataContext as DepartmentDto;
+            if (vm!.deptId > 101)
+            {
+                vm.children.Clear();
+                // 根据部门id获取在这个部门的成员
+                var ret = (await loginService.GetDeptEmployeesAsync(vm.deptId)).data;
+                ret!.ForEach(e =>
+                {
+                    
+                    vm.children.Add(new DepartmentDto
+                    {
+                        deptName = e,
+                        isEmp = true,
+                        deptId = -1
+                    });
+                });
+            }
+
+            
+            e.Handled = true;
+        }
+
+
+
     }
 }

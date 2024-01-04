@@ -12,9 +12,7 @@ namespace MyToDo.Service
         private readonly IEventAggregator aggregator = aggregator;
         private WebSocket? ws;
 
-
         public static bool IsNeedToClose = false;
-
 
         public async void Init(string token)
         {
@@ -28,7 +26,7 @@ namespace MyToDo.Service
             ws.SetCookie(new WebSocketSharp.Net.Cookie
             {
                 Name = "Authorization",
-                Value = token
+                Value = token   
             });
 
             // 在连接建立时的事件处理
@@ -42,7 +40,6 @@ namespace MyToDo.Service
             {
                 try
                 {
-                    
                     var msg = JsonSerializer.Deserialize<WebsocketMsg>(e.Data);
                     switch(msg!.Content)
                     {
@@ -84,7 +81,7 @@ namespace MyToDo.Service
             {
                 if (e.Reason.Trim() == "An exception has occurred while receiving.")
                 {
-                    // 服务端连接异常，反复PING后台服务，直到后台正常后再次连接ws
+                    // 服务端WebSocket连接异常，反复尝试重连，直到连接成功
                     while (true)
                     {
                         await Task.Delay(1000);
@@ -108,7 +105,6 @@ namespace MyToDo.Service
 
             // 启动 WebSocket 连接
             ws.Connect();
-
             
             IsNeedToClose = false;
             // 阻塞主线程，保持 WebSocket 连接

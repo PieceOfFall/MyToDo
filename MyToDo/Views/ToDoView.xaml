@@ -7,6 +7,9 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cv="clr-namespace:MyToDo.Common.Converters"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:m="clr-namespace:MyToDo.Common.Models"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:local="clr-namespace:MyToDo.Views"
              xmlns:viewmodels="clr-namespace:MyToDo.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ToDoViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -27,119 +30,149 @@
         <!-- 待办新建/编辑区域 -->
         <md:DrawerHost IsRightDrawerOpen="{Binding IsRightDrawerOpen}">
             <md:DrawerHost.RightDrawerContent>
-                <DockPanel Width="500" LastChildFill="False">
+                <ScrollViewer >
+                    <DockPanel Width="500" LastChildFill="False">
 
-                    <Grid Margin="20,20,20,0" DockPanel.Dock="Top">
-                        <TextBlock Text="添加待办" Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}" FontSize="20" FontWeight="Bold" />
-                        <TextBlock Text="修改待办" Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}" FontSize="20" FontWeight="Bold" />
-                    </Grid>
+                        <Grid Margin="20,20,20,0" DockPanel.Dock="Top">
+                            <TextBlock Text="添加待办" Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Text="修改待办" Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}" FontSize="20" FontWeight="Bold" />
+                        </Grid>
 
-                    <StackPanel Margin="20,10,20,10" Orientation="Horizontal" DockPanel.Dock="Top">
-                        <TextBlock Text="状态 : " VerticalAlignment="Center"/>
-                        <ComboBox SelectedIndex="{Binding CurrentTodo.Status}">
-                            <ComboBoxItem>未完成</ComboBoxItem>
-                            <ComboBoxItem>已完成</ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-
-                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
-
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
-                                    DockPanel.Dock="Top" Margin="0,5,0,20">
-                            <TextBlock  VerticalAlignment="Center" Text="发布人 : "/>
-                            <TextBlock Padding="5,0,0,0" Text="{Binding Sender}" Foreground="{DynamicResource PrimaryHueLightBrush}" />
+                        <StackPanel Margin="20,10,20,10" Orientation="Horizontal" DockPanel.Dock="Top">
+                            <TextBlock Text="状态 : " VerticalAlignment="Center"/>
+                            <ComboBox SelectedIndex="{Binding CurrentTodo.Status}">
+                                <ComboBoxItem>未完成</ComboBoxItem>
+                                <ComboBoxItem>已完成</ComboBoxItem>
+                            </ComboBox>
                         </StackPanel>
-                        
 
-                        <TextBlock VerticalAlignment="Center" Text="办理人 :"/>
-                        <TextBox IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
-                                 Visibility="{Binding AddById,Converter={StaticResource boolToVisibility}}"
-                                 Text="{Binding CurrentTodo.ReceiverId,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人id">
-                        </TextBox>
-                        <ComboBox   MinWidth="68"
-                                    VerticalAlignment="Center"
-                                    Margin="0,0,10,15"
-                                    IsEditable="True"
-                                    Name="dynamicComboBox"
-                                    TextBoxBase.SelectionChanged="DynamicComboBox_SelectionChanged"
-                                    Visibility="{Binding IsAddByName,Converter={StaticResource boolToVisibility}}"
-                                    md:HintAssist.Hint="请输入办理人姓名"
-                                    Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
-                        
-                        <TextBox  x:Name="receiverTextBox" IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
-                                  Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
-                                  Text="{Binding ReceiverName,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人姓名">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="TextChanged">
-                                    <i:InvokeCommandAction Command="{Binding ExecuteCommand}" CommandParameter="查找办理人" />                                                                                                                                                                                                                                      
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </TextBox>
-                        <ComboBox Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}"
-                                  SelectedIndex="{Binding AddMethodSelectedIndex}"
-                                  md:HintAssist.Hint="请选择查找方式">
-                            <ComboBoxItem Content="姓名查找" />
-                            <ComboBoxItem Content="部门查找" />
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <i:InvokeCommandAction Command="{Binding ExecuteCommand}" 
-                                   CommandParameter="选择添加方式" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </ComboBox>
+                        <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
+
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
+                                        DockPanel.Dock="Top" Margin="0,5,0,20">
+                                <TextBlock  VerticalAlignment="Center" Text="发布人 : "/>
+                                <TextBlock Padding="5,0,0,0" Text="{Binding Sender}" Foreground="{DynamicResource PrimaryHueLightBrush}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <TextBlock Text="办理人 :" Margin="0,0,0,10"/>
+                                <TextBlock Text="{Binding DeptEmpName}" Visibility="{Binding AddByDept,Converter={StaticResource boolToVisibility}}" />
+                            </StackPanel>
+                            
+                            <TextBox IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
+                                     Visibility="{Binding AddById,Converter={StaticResource boolToVisibility}}"
+                                     Text="{Binding CurrentTodo.ReceiverId,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人id">
+                            </TextBox>
+                            <TreeView ItemsSource="{Binding SelectDept}" x:Name="deptTree"
+                                      Visibility="{Binding AddByDept,Converter={StaticResource boolToVisibility}}">
+                                
+                                <TreeView.Resources>
+                                    <HierarchicalDataTemplate DataType="{x:Type m:DepartmentDto}" ItemsSource="{Binding children}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding deptName}" Visibility="{Binding isEmp,Converter={StaticResource reverseBoolToVisibility}}" />
+                                            <Button Content="{Binding deptName}" Background="DarkGray" Click="TreeViewBtnClick"
+                                                    BorderBrush="DarkGray" Visibility="{Binding isEmp,Converter={StaticResource boolToVisibility}}"/>
+                                        </StackPanel>
+                                    </HierarchicalDataTemplate>
+
+                                    <DataTemplate DataType="{x:Type m:DeptEmployee}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding empName}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </TreeView.Resources>
+                                
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+                                        <EventSetter Event="Expanded" Handler="TreeView_Expanded"/>
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                            </TreeView>
+                            <ComboBox   MinWidth="68"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,10,15"
+                                        IsEditable="True"
+                                        Name="dynamicComboBox"
+                                        TextBoxBase.SelectionChanged="DynamicComboBox_SelectionChanged"
+                                        Visibility="{Binding IsAddByName,Converter={StaticResource boolToVisibility}}"
+                                        md:HintAssist.Hint="请输入办理人姓名"
+                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+                            <TextBox  x:Name="receiverTextBox" IsEnabled="{Binding IsEdit,Converter={StaticResource reverseBool}}" 
+                                      Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
+                                      Text="{Binding ReceiverName,UpdateSourceTrigger=PropertyChanged}" Margin="10" md:HintAssist.Hint="请输入办理人姓名">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding ExecuteCommand}" CommandParameter="查找办理人" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                            <ComboBox Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}"
+                                      SelectedIndex="{Binding AddMethodSelectedIndex}"
+                                      md:HintAssist.Hint="请选择查找方式">
+                                <ComboBoxItem Content="姓名查找" />
+                                <ComboBoxItem Content="部门查找" />
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding ExecuteCommand}" 
+                                                               CommandParameter="选择添加方式" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
+                            <TextBlock VerticalAlignment="Center" Text="标题 :"/>
+                            <TextBox Text="{Binding CurrentTodo.Title}" Margin="10" md:HintAssist.Hint="请输入待办标题" DockPanel.Dock="Top" />
+                        </DockPanel>
+
+                        <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10" MaxHeight="210">
+                            <TextBlock  VerticalAlignment="Center" Text="内容 :"/>
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <TextBox AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding CurrentTodo.Content}" Margin="15"
+                                         md:HintAssist.Hint="请输入待办内容" DockPanel.Dock="Top" MaxLength="1023" />
+                            </ScrollViewer>
+                        </DockPanel>
+
+                        <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
+                            <TextBlock  VerticalAlignment="Center" Text="到期 :"/>
+                            <DatePicker SelectedDate="{Binding CurrentTodo.DueDate}"
+                                        Width="400"
+                                        md:HintAssist.Hint="选择到期时间"
+                                        Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
+                        </DockPanel>
+
+                        <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
+                            <TextBlock  VerticalAlignment="Center" Text="紧急程度 : "/>
+                            <Border Width="20" Height="20" Background="{Binding CurrentUrgencyColor}"/>
+                            <ComboBox SelectedIndex="{Binding UrgencySelectedIndex}" Margin="10,0,0,0"
+                                      md:HintAssist.Hint="请选择紧急度">
+                                <ComboBoxItem Background="Red" Content="紧 急 重 要" />
+                                <ComboBoxItem Background="#d4675f" Content="不 紧 急 重 要" />
+                                <ComboBoxItem Background="#d4b8b6" Content="紧 急 不 重 要" />
+                                <ComboBoxItem Content="不紧急不重要" />
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding ExecuteCommand}" 
+                                                               CommandParameter="选择紧急程度" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </DockPanel>
+
+                        <Grid Margin="20" DockPanel.Dock="Top">
+                            <Button Content="添加"
+                                    Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}"
+                                    Command="{Binding ExecuteCommand}"
+                                    CommandParameter="保存"/>
+                            <Button Content="修改"
+                                    Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
+                                    Command="{Binding ExecuteCommand}"
+                                    CommandParameter="保存"/>
+                        </Grid>
+
                     </DockPanel>
-                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
-                        <TextBlock VerticalAlignment="Center" Text="标题 :"/>
-                        <TextBox Text="{Binding CurrentTodo.Title}" Margin="10" md:HintAssist.Hint="请输入待办标题" DockPanel.Dock="Top" />
-                    </DockPanel>
-
-                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10" MaxHeight="210">
-                        <TextBlock  VerticalAlignment="Center" Text="内容 :"/>
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding CurrentTodo.Content}" Margin="15"
-                                     md:HintAssist.Hint="请输入待办内容" DockPanel.Dock="Top" MaxLength="1023" />
-                        </ScrollViewer>
-                    </DockPanel>
-
-                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
-                        <TextBlock  VerticalAlignment="Center" Text="到期 :"/>
-                        <DatePicker
-                                     SelectedDate="{Binding CurrentTodo.DueDate}"
-                                     Width="400"
-                                     md:HintAssist.Hint="选择到期时间"
-                                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
-                    </DockPanel>
-
-                    <DockPanel DockPanel.Dock="Top" Margin="20,10,20,10">
-                        <TextBlock  VerticalAlignment="Center" Text="紧急程度 : "/>
-                        <Border Width="20" Height="20" Background="{Binding CurrentUrgencyColor}"/>
-                        <ComboBox SelectedIndex="{Binding UrgencySelectedIndex}" Margin="10,0,0,0"
-                                  md:HintAssist.Hint="请选择紧急度">
-                            <ComboBoxItem Background="Red" Content="紧 急 重 要" />
-                            <ComboBoxItem Background="#d4675f" Content="不 紧 急 重 要" />
-                            <ComboBoxItem Background="#d4b8b6" Content="紧 急 不 重 要" />
-                            <ComboBoxItem Content="不紧急不重要" />
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <i:InvokeCommandAction Command="{Binding ExecuteCommand}" 
-                                        CommandParameter="选择紧急程度" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </ComboBox>
-                    </DockPanel>
-
-                    <Grid Margin="20" DockPanel.Dock="Top">
-                        <Button Content="添加"
-                                Visibility="{Binding IsEdit,Converter={StaticResource reverseBoolToVisibility}}"
-                                Command="{Binding ExecuteCommand}"
-                                CommandParameter="保存"/>
-                        <Button Content="修改"
-                                Visibility="{Binding IsEdit,Converter={StaticResource boolToVisibility}}"
-                                Command="{Binding ExecuteCommand}"
-                                CommandParameter="保存"/>
-                    </Grid>
-
-                </DockPanel>
+                </ScrollViewer>
+                
             </md:DrawerHost.RightDrawerContent>
 
             <Grid>

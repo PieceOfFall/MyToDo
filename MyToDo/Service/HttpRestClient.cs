@@ -25,7 +25,7 @@ namespace MyToDo.Service
 
                 var request = new RestRequest(apiUrl + baseRequest.Route, method: baseRequest.Method);
 
-                if (!baseRequest.Route.Contains("user"))
+                if (!baseRequest.Route.Contains("login"))
                 {
                     request.AddHeader("Authorization", AppSession.Token);
                 }

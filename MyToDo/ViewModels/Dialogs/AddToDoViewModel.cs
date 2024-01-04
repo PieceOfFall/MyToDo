@@ -11,6 +11,8 @@ namespace MyToDo.ViewModels.Dialogs
     {
         public AddToDoViewModel()
         {
+            addByName = true;
+            addByDept = false;
             isEidt = false;
             urgencySelectedIndex = 0;
             username = AppSession.Username;
@@ -29,6 +31,41 @@ namespace MyToDo.ViewModels.Dialogs
         {
             get { return model; }
             set { model = value; RaisePropertyChanged(); }
+        }
+
+        private int addMethod;
+
+
+
+        private bool addByName;
+
+        public bool AddByName
+        {
+            get { return addByName; }
+            set { addByName = value; RaisePropertyChanged(); }
+        }
+
+        private bool addByDept;
+
+        public bool AddByDept
+        {
+            get { return addByDept; }
+            set { addByDept = value; }
+        }
+
+        public int AddMethod
+        {
+            get { return addMethod; }
+            set
+            {
+                addMethod = value;
+                switch (addMethod)
+                {
+                    case 0: AddByName = true; AddByDept = false; break;
+                    case 1: AddByName = false; AddByDept = true; break;
+                }
+                RaisePropertyChanged();
+            }
         }
 
         private string username;

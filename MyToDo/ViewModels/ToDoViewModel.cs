@@ -3,7 +3,6 @@ using MyToDo.Common.Models;
 using MyToDo.Extensions;
 using MyToDo.Service;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using System.Collections.ObjectModel;
@@ -15,8 +14,6 @@ namespace MyToDo.ViewModels
     {
         private readonly IDialogHostService dialogHost;
 
-        private readonly MainViewModel mainViewModel;
-
         //private readonly IEventAggregator aggregator;
 
         public ToDoViewModel(IToDoService service,IContainerProvider provider):base(provider)
@@ -25,6 +22,7 @@ namespace MyToDo.ViewModels
             search = string.Empty;
             selectedIndex = 1;
             AddMethodSelectedIndex = -1;
+            loginService = provider.Resolve<ILoginService>();
             this.service = service;
             toDoDtos = [];
             currentTodo = new ToDoDto();
@@ -36,7 +34,15 @@ namespace MyToDo.ViewModels
             isReceiver = true;
             isEnableDeleteButton = false;
             isEnableDeleteButton = false;
-            //aggregator = provider.Resolve<IEventAggregator>();
+            GetSimpleDeptTree();
+            aggregator.RegisterLogicToVm(e =>
+            {
+                if (e.VmName == "ToDoViewModel")
+                {
+                    DeptEmpName = (string)e.Data;
+                }
+            });
+
             dialogHost = provider.Resolve<IDialogHostService>();
             ExecuteCommand = new DelegateCommand<string>(Execute);
             SelectCommand = new DelegateCommand<ToDoDto>(Selected);
@@ -47,6 +53,14 @@ namespace MyToDo.ViewModels
         private readonly IToDoService service;
 
         private ObservableCollection<ToDoDto> toDoDtos;
+
+        private ILoginService loginService;
+
+        public ILoginService LoginService
+        {
+            get { return loginService; }
+            set { loginService = value; }
+        }
 
         private bool isEdit;
 
@@ -70,6 +84,14 @@ namespace MyToDo.ViewModels
         }
 
         private string sender;
+
+        private ObservableCollection<TreeItem> selectDept;
+
+        public ObservableCollection<TreeItem> SelectDept
+        {
+            get { return selectDept; }
+            set { selectDept = value; RaisePropertyChanged(); }
+        }
 
         public string Sender
         {
@@ -167,8 +189,6 @@ namespace MyToDo.ViewModels
             };
         }
 
-        private bool addById = false;
-
         private string currentUrgencyColor;
 
         public string CurrentUrgencyColor
@@ -176,6 +196,8 @@ namespace MyToDo.ViewModels
             get { return currentUrgencyColor; }
             set { currentUrgencyColor = value; RaisePropertyChanged(); }
         }
+
+        private bool addById = false;
 
         public bool AddById
         {
@@ -195,6 +217,35 @@ namespace MyToDo.ViewModels
                 RaisePropertyChanged(); 
             }
         }
+
+        private bool addByDept = false;
+
+        public bool AddByDept
+        {
+            get => addByDept;
+            set
+            {
+                addByDept = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private TreeItem selectedTreeItem;
+
+        public TreeItem SelectedTreeItem
+        {
+            get { return selectedTreeItem; }
+            set { selectedTreeItem = value; RaisePropertyChanged(); }
+        }
+
+        private string deptEmpName;
+
+        public string DeptEmpName
+        {
+            get { return deptEmpName; }
+            set { deptEmpName = value; RaisePropertyChanged(); }
+        }
+
 
         private void SelectRadio(string radioIndex)
         {
@@ -364,6 +415,11 @@ namespace MyToDo.ViewModels
                     {
                         ret = await service.AddAsyncByName(CurrentTodo);
                     }
+                    else if(AddByDept)
+                    {
+                        CurrentTodo.ReceiverName = DeptEmpName;
+                        ret = await service.AddAsyncByName(CurrentTodo);
+                    }
                      
                     if (ret!=null && ret.data != 0)
                     {
@@ -388,8 +444,8 @@ namespace MyToDo.ViewModels
         {
             switch(AddMethodSelectedIndex)
             {
-                case 0: AddByName = true; AddById = false; break;
-                case 1: AddById = false; AddByName = false; break;
+                case 0: AddByName = true; AddById = false; AddByDept = false; break;
+                case 1: AddById = false; AddByName = false; AddByDept = true; break;
             }
         }
 
@@ -419,7 +475,7 @@ namespace MyToDo.ViewModels
 
         private async void Selected(ToDoDto obj)
         {
-            AddMethodSelectedIndex = 1;
+            AddByDept = false;
             IsEdit = true;
             UpdateLoading(true);
             try
@@ -454,6 +510,15 @@ namespace MyToDo.ViewModels
                 Query();
             }
         }
+
+        private async void GetSimpleDeptTree()
+        {
+            SelectDept =
+            [
+                (await loginService.GetDeptTreeAsync()).data! 
+            ];
+        }
+
         private bool isChanging = false;
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

@@ -146,8 +146,8 @@
                                         </Style>
                                     </ToggleButton.Style>
                                 </ToggleButton>
-                                <StackPanel>
 
+                                <StackPanel>
                                     <Grid Width="600">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="2.7*" />
@@ -164,6 +164,7 @@
 
                                     <TextBlock Text="{Binding Content}" Margin="0,5"  Opacity="0.5" />
                                 </StackPanel>
+                                
                             </DockPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

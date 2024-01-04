@@ -43,8 +43,15 @@
 
             <StackPanel Margin="20,20" Orientation="Horizontal" DockPanel.Dock="Top" >
                 <TextBlock Text="办事人     " VerticalAlignment="Center" Margin="0,0,0,0" />
-                <TextBox Name="receiverBox" Text="{Binding Model.ReceiverName}" GotFocus="MyPopup_GotFocus" KeyUp="TextBox_KeyUp" TextChanged="TextBox_TextChanged"
-                        md:HintAssist.Hint="请输入办事人名称                                                              "/>
+                <TextBox Name="receiverBox" Text="{Binding Model.ReceiverName}" 
+                         GotFocus="MyPopup_GotFocus" KeyUp="TextBox_KeyUp" TextChanged="TextBox_TextChanged"
+                         Visibility="{Binding AddByName,Converter={StaticResource boolToVisibility}}"
+                         md:HintAssist.Hint="请输入办事人名称                                           "/>
+                <ComboBox SelectedIndex="{Binding AddMethod}">
+                    <ComboBoxItem>姓名查找</ComboBoxItem>
+                    <ComboBoxItem>部门查找</ComboBoxItem>
+                </ComboBox>
+                
             </StackPanel>
 
             <StackPanel Margin="20,10" Orientation="Horizontal" DockPanel.Dock="Top" >
